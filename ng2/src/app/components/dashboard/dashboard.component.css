@@ -1,0 +1,27 @@
+li {
+  cursor: default;
+}
+
+.scrollable-menu {
+  height: auto;
+  max-height: 200px;
+  overflow-x: hidden;
+}
+
+.btn-block {
+  margin-bottom: 20px;
+}
+
+.form-control {
+  margin-left: 10px;
+  margin-bottom: 20px;
+}
+
+.input-group-addon {
+  padding: 4px 8px;
+}
+
+.currecncycontainer{
+  padding-bottom: 20px;
+  padding-top: 8px;
+}
