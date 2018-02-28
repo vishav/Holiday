@@ -70,7 +70,7 @@ export class HolidaylistComponent implements OnInit {
         this.hselectionService.getFreeHolidays(data)
           .subscribe(holidays => {
               console.log(holidays);
-              // this.holidays = holidays.theList;
+              this.holidays = holidays;
             },
             error => {
               this.errorMessage = error.json().errormessage;
@@ -81,7 +81,7 @@ export class HolidaylistComponent implements OnInit {
         this.hselectionService.getHolidays(data)
           .subscribe(
             holidays => {
-              // this.holidays = holidays.theList;
+              this.holidays = holidays;
               console.log(this.holidays);
             },
             error => this.errorMessage = <any>error

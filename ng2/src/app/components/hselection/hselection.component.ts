@@ -71,7 +71,7 @@ export class HselectionComponent implements OnInit {
     this.hselectionService.getAllCountries().subscribe(countries =>
     {
       console.log(countries);
-      this.countries = JSON.parse(JSON.stringify(countries)).theList;
+      this.countries = countries;
     });
     this.currentyear = (new Date()).getFullYear();
     // this.hselectionService.getYear().subscribe( year => {
@@ -84,8 +84,8 @@ export class HselectionComponent implements OnInit {
     {
       this.hselectionService.getCountryCites(country).subscribe(cities =>
       {
-        this.cities = JSON.parse(JSON.stringify(cities)).theList;
-        this.states = JSON.parse(JSON.stringify(states)).theList;
+        this.cities = cities;
+        this.states = states;
         this.selectedcountry = country;
         this.selectedstate = 'State';
         this.selectedcity = 'City';
@@ -129,7 +129,7 @@ export class HselectionComponent implements OnInit {
   stateSelect(state){
     this.hselectionService.getCities(state, this.selectedcountry).subscribe(cities =>
     {
-      this.cities = JSON.parse(JSON.stringify(cities)).theList;
+      this.cities = cities;
       this.selectedstate = state;
     });
   }

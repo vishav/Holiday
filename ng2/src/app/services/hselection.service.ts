@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 
-// import { Http, RequestOptions, Headers, Jsonp } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { AuthenticationService } from './authentication.service';
 import 'rxjs/add/operator/map';
-
-import {GlobalConstants} from '../constants/GlobalConstants';
 
 @Injectable()
 export class HselectionService {
@@ -37,7 +34,7 @@ export class HselectionService {
     headers.append('Accept', 'application/json');
     headers.append('Authorization', 'Bearer ' + this.authentication.getToken());
     const options = {headers};
-    return this.http.get('/' + data.country + '/' + data.state + '/' + data.city + '/' + data.fromYear + '/' + data.fromMonth + '/' + data.fromDay + '/' + data.toYear + '/' + data.toMonth + '/' + data.toDay, options);
+    return this.http.get('/holidays/' + data.country + '/' + data.state + '/' + data.city + '/' + data.fromYear + '/' + data.fromMonth + '/' + data.fromDay + '/' + data.toYear + '/' + data.toMonth + '/' + data.toDay, options);
   }
 
   getFreeHolidays(data) {

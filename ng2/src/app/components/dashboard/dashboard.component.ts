@@ -98,7 +98,7 @@ export class DashboardComponent implements OnInit {
       this.selectedcity = this.city;
     }
     this.hselectionService.getAllCountries().subscribe(countries => {
-      // this.countries = countries.theList;
+      this.countries = countries;
     });
     this.currentyear = (new Date()).getFullYear();
     // this.hselectionService.getYear().subscribe(year => {
@@ -109,8 +109,8 @@ export class DashboardComponent implements OnInit {
   countrySelect(country) {
     this.hselectionService.getStates(country).subscribe(states => {
       this.hselectionService.getCountryCites(country).subscribe(cities => {
-        // this.cities = cities.theList;
-        // this.states = states.theList;
+        this.cities = cities;
+        this.states = states;
         this.selectedcountry = country;
         this.selectedstate = 'State';
         this.selectedcity = 'City';
@@ -123,7 +123,7 @@ export class DashboardComponent implements OnInit {
 
   stateSelect(state) {
     this.hselectionService.getCities(state, this.selectedcountry).subscribe(cities => {
-      // this.cities = cities.theList;
+      this.cities = cities;
       this.selectedstate = state;
     });
   }
