@@ -1397,6 +1397,7 @@ var DashboardComponent = /** @class */ (function () {
         }
     }
     DashboardComponent.prototype.ngOnInit = function () {
+        var _this = this;
         if (this.country) {
             this.selectedcountry = this.country;
             this.submitenabled = true;
@@ -1408,7 +1409,7 @@ var DashboardComponent = /** @class */ (function () {
             this.selectedcity = this.city;
         }
         this.hselectionService.getAllCountries().subscribe(function (countries) {
-            // this.countries = countries.theList;
+            _this.countries = countries;
         });
         this.currentyear = (new Date()).getFullYear();
         // this.hselectionService.getYear().subscribe(year => {
@@ -1419,8 +1420,8 @@ var DashboardComponent = /** @class */ (function () {
         var _this = this;
         this.hselectionService.getStates(country).subscribe(function (states) {
             _this.hselectionService.getCountryCites(country).subscribe(function (cities) {
-                // this.cities = cities.theList;
-                // this.states = states.theList;
+                _this.cities = cities;
+                _this.states = states;
                 _this.selectedcountry = country;
                 _this.selectedstate = 'State';
                 _this.selectedcity = 'City';
@@ -1431,7 +1432,7 @@ var DashboardComponent = /** @class */ (function () {
     DashboardComponent.prototype.stateSelect = function (state) {
         var _this = this;
         this.hselectionService.getCities(state, this.selectedcountry).subscribe(function (cities) {
-            // this.cities = cities.theList;
+            _this.cities = cities;
             _this.selectedstate = state;
         });
     };
@@ -1580,7 +1581,7 @@ var HolidaylistComponent = /** @class */ (function () {
                 _this.hselectionService.getFreeHolidays(data)
                     .subscribe(function (holidays) {
                     console.log(holidays);
-                    // this.holidays = holidays.theList;
+                    _this.holidays = holidays;
                 }, function (error) {
                     _this.errorMessage = error.json().errormessage;
                     console.log(_this.errorMessage);
@@ -1589,7 +1590,7 @@ var HolidaylistComponent = /** @class */ (function () {
             else if (_this.route == 'holidaylist') {
                 _this.hselectionService.getHolidays(data)
                     .subscribe(function (holidays) {
-                    // this.holidays = holidays.theList;
+                    _this.holidays = holidays;
                     console.log(_this.holidays);
                 }, function (error) { return _this.errorMessage = error; });
             }
@@ -1722,7 +1723,7 @@ var HselectionComponent = /** @class */ (function () {
         }
         this.hselectionService.getAllCountries().subscribe(function (countries) {
             console.log(countries);
-            _this.countries = JSON.parse(JSON.stringify(countries)).theList;
+            _this.countries = countries;
         });
         this.currentyear = (new Date()).getFullYear();
         // this.hselectionService.getYear().subscribe( year => {
@@ -1733,8 +1734,8 @@ var HselectionComponent = /** @class */ (function () {
         var _this = this;
         this.hselectionService.getStates(country).subscribe(function (states) {
             _this.hselectionService.getCountryCites(country).subscribe(function (cities) {
-                _this.cities = JSON.parse(JSON.stringify(cities)).theList;
-                _this.states = JSON.parse(JSON.stringify(states)).theList;
+                _this.cities = cities;
+                _this.states = states;
                 _this.selectedcountry = country;
                 _this.selectedstate = 'State';
                 _this.selectedcity = 'City';
@@ -1774,7 +1775,7 @@ var HselectionComponent = /** @class */ (function () {
     HselectionComponent.prototype.stateSelect = function (state) {
         var _this = this;
         this.hselectionService.getCities(state, this.selectedcountry).subscribe(function (cities) {
-            _this.cities = JSON.parse(JSON.stringify(cities)).theList;
+            _this.cities = cities;
             _this.selectedstate = state;
         });
     };
@@ -2749,6 +2750,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+// import {GlobalConstants} from '../utilities/GlobalConstants';
+// import {Holiday} from '../utilities/Holiday';
 var HselectionService = /** @class */ (function () {
     function HselectionService(http, authentication) {
         this.http = http;
@@ -2773,7 +2776,7 @@ var HselectionService = /** @class */ (function () {
         headers.append('Accept', 'application/json');
         headers.append('Authorization', 'Bearer ' + this.authentication.getToken());
         var options = { headers: headers };
-        return this.http.get('/' + data.country + '/' + data.state + '/' + data.city + '/' + data.fromYear + '/' + data.fromMonth + '/' + data.fromDay + '/' + data.toYear + '/' + data.toMonth + '/' + data.toDay, options);
+        return this.http.get('/holidays/' + data.country + '/' + data.state + '/' + data.city + '/' + data.fromYear + '/' + data.fromMonth + '/' + data.fromDay + '/' + data.toYear + '/' + data.toMonth + '/' + data.toDay, options);
     };
     HselectionService.prototype.getFreeHolidays = function (data) {
         console.log(data);
