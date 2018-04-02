@@ -1,42 +1,43 @@
-import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import 'rxjs/add/operator/catch'
 import 'rxjs/add/operator/map'
-import { Observable } from "rxjs";
+import {Observable} from "rxjs";
 
-import { SearchQuery } from '../models/SearchQuery';
-import { AuthenticationService } from '../services/authentication.service';
+import {SearchQuery} from '../models/SearchQuery';
+import {AuthenticationService} from '../services/authentication.service';
 
 @Injectable()
 export class ShoppingcartService {
   public shoppingCart: SearchQuery[];
 
 
-  constructor(private http: Http,
+  constructor(private http: HttpClient,
               private authenticationService: AuthenticationService) {
     this.setFromSavedCart();
   }
 
-  getShoppingCart() {
+  getShoppingCart(): Observable<SearchQuery[]> {
     //return this.shoppingCart;
     console.log("getting saved cart");
     if (this.authenticationService.isLoggedIn()) {
 
-      let headers = new Headers({'Accept': 'application/json'});
-      headers.append('Authorization', 'Bearer ' + this.authenticationService.getToken());
-      let options = new RequestOptions({headers: headers});
+      const headers = new HttpHeaders({
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + this.authenticationService.getToken(),
+      });
+      // headers=headers.append('observe','response');
+      let options = {headers};
 
       // first setting shopping cart variable locally
-      this.http.get('/api/shoppingcart/' + this.authenticationService.currentUser().email, options)
-        .map(res => res.json()).subscribe(usercartitems => {
+      this.http.get<SearchQuery[]>('/getShoppingCart/' + this.authenticationService.currentUser().userId, options).subscribe(usercartitems => {
         if (usercartitems)
           console.log(usercartitems);
         this.shoppingCart = usercartitems;
       });
 
       // returning observable to calling component
-      return this.http.get('/api/shoppingcart/' + this.authenticationService.currentUser().email, options)
-        .map(res => res.json());
+      return this.http.get<SearchQuery[]>('/getShoppingCart/' + this.authenticationService.currentUser().userId, options);
     } else {
       let savedShoppingCart = JSON.parse(localStorage.getItem('mea2necomm-shopping-cart'));
       if (savedShoppingCart) {
@@ -49,6 +50,10 @@ export class ShoppingcartService {
   }
 
   addItem(cartItem: SearchQuery) {
+    if(!this.shoppingCart){
+      this.shoppingCart = [];
+      console.log("initalizing shopping cart")
+    }
     this.shoppingCart.push(cartItem);
     console.log("adding item to cart: " + this.shoppingCart);
     this.updateStorage();
@@ -71,7 +76,7 @@ export class ShoppingcartService {
     this.updateStorage();
   }
 
-  // this function updates the locally stored cart to the server
+  // this function integrates the locally stored cart with the server
   // call on login
   updateLocalStorageToServer() {
     //return Observable.of(true);
@@ -81,24 +86,20 @@ export class ShoppingcartService {
       if (savedShoppingCart) {
 
 
-        let headers = new Headers({'Accept': 'application/json'});
-        headers.append('Authorization', 'Bearer ' + this.authenticationService.getToken());
-        let options = new RequestOptions({headers: headers});
-        /*
-        this.http.get('/api/shoppingcart/'+ this.authenticationService.currentUser().email,options )
-          .map(res => res.json()).subscribe(usercartitems=> {
-          this.shoppingCart = usercartitems;
-          this.addItems(savedShoppingCart);
-          //resetting local storage
-          localStorage.setItem('mea2necomm-shopping-cart', JSON.stringify([]));
+        const headers = new HttpHeaders({
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.authenticationService.getToken()
         });
-        */
 
-        //return Observable.of(true);
-        return this.http.get('/api/shoppingcart/' + this.authenticationService.currentUser().email, options)
+        let options = {headers};
+        console.log("inside shopping cart sending request");
+        return this.http.get<SearchQuery[]>('/getShoppingCart/' + this.authenticationService.currentUser().userId, options)
           .map(res => {
-            let usercartitems = res.json();
-            this.shoppingCart = usercartitems;
+            console.log("updateLocalStorageToServer:", res);
+            if (res) {
+              // let usercartitems = res;
+              this.shoppingCart = res;
+            }
             this.addItems(savedShoppingCart);
             //resetting local storage
             localStorage.setItem('mea2necomm-shopping-cart', JSON.stringify([]));
@@ -107,9 +108,11 @@ export class ShoppingcartService {
 
 
       } else {
+        console.log("inside shopping cart no saved cart");
         return Observable.of(true);
       }
     } else { // user not authenticated
+      console.log("inside shopping cart not logged in");
       return Observable.of(false);
     }
 
@@ -121,17 +124,21 @@ export class ShoppingcartService {
     console.log("getting saved cart");
     if (this.authenticationService.isLoggedIn()) {
 
-      let headers = new Headers({'Accept': 'application/json'});
-      headers.append('Authorization', 'Bearer ' + this.authenticationService.getToken());
-      let options = new RequestOptions({headers: headers});
-
-      // first setting shopping cart variable locally
-      this.http.get('/api/shoppingcart/' + this.authenticationService.currentUser().email, options)
-        .map(res => res.json()).subscribe(usercartitems => {
-        if (usercartitems)
-          console.log(usercartitems);
-        this.shoppingCart = usercartitems;
+      const headers = new HttpHeaders({
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + this.authenticationService.getToken()
       });
+
+      let options = {headers};
+      console.log("setting from saved cart");
+      // first setting shopping cart variable locally
+      this.http.get<SearchQuery[]>('/getShoppingCart/' + this.authenticationService.currentUser().userId, options)
+        .subscribe(usercartitems => {
+          if (usercartitems) {
+            console.log(usercartitems);
+            this.shoppingCart = usercartitems;
+          }
+        });
     } else {
       let savedShoppingCart = JSON.parse(localStorage.getItem('mea2necomm-shopping-cart'));
       if (savedShoppingCart) {
@@ -142,6 +149,7 @@ export class ShoppingcartService {
     }
   }
 
+  // this function updates the locally stored cart to the server
   private updateStorage() {
     if (this.authenticationService.isLoggedIn()) {
       console.log("setting logged in users cart");
@@ -150,29 +158,27 @@ export class ShoppingcartService {
       //console.log(user);
       //console.log(JSON.stringify({ useremail: user.email, cartItems: this.shoppingCart }));
 
-
-      var headers = new Headers({
+      const headers = new HttpHeaders({
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Authorization': 'Bearer ' + this.authenticationService.getToken(),
+        'user_id': user.userId.toString(),
       });
+      // headers=headers.append('observe', 'response');
 
-      headers.append('Authorization', 'Bearer ' + this.authenticationService.getToken());
-
-      let options = new RequestOptions({headers: headers});
+      let options = {headers};
       //console.log(headers);
 
-      this.http.post('/api/shoppingcart', JSON.stringify({
-        useremail: user.email,
-        cartItems: this.shoppingCart
-      }), options)
+      this.http.post('/saveShoppingCart', JSON.stringify(this.shoppingCart
+      ), options)
         .map((response) => {
 
-          if (response.status === 200) {
+          if (response) {
             console.log("saved cart successfully to db");
             // return true to indicate successful saved
             return true;
           } else {
-            console.log("error while saving cart to db. Status: " + response.status);
+            console.log("error while saving cart to db. Status: " + response);
             // return false to indicate it did not save properly
             return false;
           }

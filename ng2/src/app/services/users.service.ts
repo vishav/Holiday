@@ -24,7 +24,7 @@ export class UsersService {
       let options = new RequestOptions({headers: headers});
 
       // returning observable to calling component
-      return this.http.get('/api/users/', options)
+      return this.http.get('/users/', options)
         .map(res => res.json());
     }
   }
@@ -39,7 +39,7 @@ export class UsersService {
 
     // returning observable to calling component
 
-    return this.http.post('/api/resetpassword', JSON.stringify({useremail: useremail, reset: true}), options)
+    return this.http.post('/resetpassword', JSON.stringify({useremail: useremail, reset: true}), options)
       .map(res => res.json());
     //}
   }
@@ -51,7 +51,7 @@ export class UsersService {
 
     // returning observable to calling component
     console.log("sending request for uuid " + uuid);
-    return this.http.get('/api/uuiduser/' + uuid, options)
+    return this.http.get('/uuiduser/' + uuid, options)
       .map(res => res.json());
   }
 
@@ -64,7 +64,7 @@ export class UsersService {
 
     // returning observable to calling component
 
-    return this.http.post('/api/changepassword', JSON.stringify({requesteduuid: uuid, password: password}), options)
+    return this.http.post('/changepassword', JSON.stringify({requesteduuid: uuid, password: password}), options)
       .map(res => res.json());
 
   }

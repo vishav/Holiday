@@ -1,14 +1,13 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
-import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
-import { AuthenticationService } from './authentication.service';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {AuthenticationService} from './authentication.service';
 import 'rxjs/add/operator/map';
 
 @Injectable()
 export class HselectionService {
 
-  constructor(private http: HttpClient, private authentication: AuthenticationService) {
+  constructor(private http: HttpClient, private authservice: AuthenticationService) {
   }
 
   // Get all posts from the API
@@ -17,7 +16,7 @@ export class HselectionService {
   }
 
   getStates(country) {
-    return this.http.get('/getFreeHolidays/countryStates/'+ country);
+    return this.http.get('/getFreeHolidays/countryStates/' + country);
   }
 
   getCountryCites(country) {
@@ -29,10 +28,11 @@ export class HselectionService {
   }
 
   getHolidays(data) {
-    console.log(this.authentication.getToken());
-    const headers = new HttpHeaders();
-    headers.append('Accept', 'application/json');
-    headers.append('Authorization', 'Bearer ' + this.authentication.getToken());
+    console.log(this.authservice.getToken());
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + this.authservice.getToken()
+    });
     const options = {headers};
     return this.http.get('/holidays/' + data.country + '/' + data.state + '/' + data.city + '/' + data.fromYear + '/' + data.fromMonth + '/' + data.fromDay + '/' + data.toYear + '/' + data.toMonth + '/' + data.toDay, options);
   }

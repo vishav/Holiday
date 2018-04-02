@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
-import { PaymentService } from '../../services/payment.service';
-import { Pricing } from '../../models/Pricing';
-import { AuthenticationService } from '../../services/authentication.service';
+import {PaymentService} from '../../services/payment.service';
+import {Pricing} from '../../models/Pricing';
+import {AuthenticationService} from '../../services/authentication.service';
+import {PricingService} from "../../services/pricing.service";
 
 @Component({
   moduleId: module.id,
@@ -20,7 +21,7 @@ export class PricingComponent implements OnInit {
   failuremessage: string = null;
 
   constructor(private authenticationService: AuthenticationService,
-              private paymentservice: PaymentService) {
+              private pricingservice: PricingService) {
     this.isloggedin = authenticationService.isLoggedIn()
     if (this.isloggedin) {
       const curuser: any = authenticationService.currentUser();
@@ -34,7 +35,7 @@ export class PricingComponent implements OnInit {
       }
     }
 
-    this.paymentservice.getPricing().subscribe(pricing => {
+    this.pricingservice.getPricing().subscribe(pricing => {
         console.log(pricing);
         this.pricing = pricing;
       },
@@ -48,7 +49,7 @@ export class PricingComponent implements OnInit {
   ngOnInit() {
   }
 
-  savePricing(){
+  savePricing() {
     this.loading = true;
     const data = {
       countryPrice: this.pricing.countryPrice,
@@ -60,7 +61,7 @@ export class PricingComponent implements OnInit {
     this.successmessage = null;
     this.failuremessage = null;
 
-    this.paymentservice.savePricing(data).subscribe((result) => {
+    this.pricingservice.savePricing(data).subscribe((result) => {
         console.log(result);
         this.successmessage = 'Successfully saved pricing.';
         this.loading = false;

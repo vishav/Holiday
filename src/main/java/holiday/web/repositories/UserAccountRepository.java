@@ -21,7 +21,7 @@ public interface UserAccountRepository extends CrudRepository<UserAccount,Long> 
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
 //    List<UserAccount> findByFirstNameLike(@Param("firstName") String firstName);
 
-    UserAccount findByUserName(String userName);
+//    UserAccount findByUserName(String userName);
 
     UserAccount findByEmail(String email);
 }

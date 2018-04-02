@@ -18,8 +18,8 @@
         <li [ngClass]="{active: selection == 2}"><a class="nav-link" [routerLink]="['/instructions']">Instructions</a></li>
         <li [ngClass]="{active: selection == 3}"><a class="nav-link" [routerLink]="['/pricing']">Pricing</a></li>
         <li [ngClass]="{active: selection == 4}"><a class="nav-link" [routerLink]="['/info']">General Information</a></li>
-        <li *ngIf="role=='administrator'" [ngClass]="{active: selection == 5}"><a class="nav-link" [routerLink]="['/dashboard']">Dashboard</a></li>
-        <li *ngIf="role=='administrator'" [ngClass]="{active: selection == 6}"><a class="nav-link" [routerLink]="['/pwdreset']">Password Reset</a>
+        <li *ngIf="role=='ROLE_ADMIN'" [ngClass]="{active: selection == 5}"><a class="nav-link" [routerLink]="['/dashboard']">Dashboard</a></li>
+        <li *ngIf="role=='ROLE_ADMIN'" [ngClass]="{active: selection == 6}"><a class="nav-link" [routerLink]="['/pwdreset']">Password Reset</a>
         </li>
       </ul>
 
@@ -30,14 +30,14 @@
             {{currentUser.name}} <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
             <li><a (click)="logout($event)">Logout</a></li>
-            <li><a href="/orders">Orders</a></li>
+            <li><a class="nav-link" [routerLink]="['/orders']">Orders</a></li>
           </ul>
         </li>
-        <li *ngIf="cartnumber === undefined"><a href="/shoppingcart">Cart <span
+        <li *ngIf="cartnumber === undefined"><a class="nav-link" [routerLink]="['/shoppingcart']">Cart <span
           class="glyphicon glyphicon-shopping-cart badge">{{this.numitems}}</span></a></li>
-        <li *ngIf="cartnumber !== undefined"><a href="/shoppingcart">Cart <span
+        <li *ngIf="cartnumber !== undefined"><a class="nav-link" [routerLink]="['/shoppingcart']">Cart <span
           class="glyphicon glyphicon-shopping-cart badge">{{cartnumber}}</span></a></li>
-        <li *ngIf="!isloggedin"><a href="/login">Login</a></li>
+        <li *ngIf="!isloggedin"><a class="nav-link" [routerLink]="['/login']">Login</a></li>
       </ul>
     </div>
   </div>

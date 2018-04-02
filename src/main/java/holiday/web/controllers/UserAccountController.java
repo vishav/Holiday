@@ -45,7 +45,7 @@ public class UserAccountController {
         return userAccountService.getUser(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST,value = "/authenticate")
+    @RequestMapping(method = RequestMethod.POST,value = "/login")
     public UserAccount AuthenticateUser(@RequestBody UserAccount userAccount)
     {
         return userAccountService.authenticateUser(userAccount);

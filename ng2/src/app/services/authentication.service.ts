@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/add/operator/catch'
 import 'rxjs/add/operator/map'
 import { Observable } from 'rxjs';
@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class AuthenticationService {
   public token: string;
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
   }
 
   getToken() {
@@ -21,11 +21,19 @@ export class AuthenticationService {
   }
 
   login(useremail: string, password: string) {
-    return this.http.post('/api/login', {email: useremail, password: password})
+
+    var base64Credential: string = btoa( useremail+ ':' + password);
+    const headers = new HttpHeaders({"Authorization": "Basic " + base64Credential});
+    // creating base64 encoded String from useremail and password
+
+    let options = {headers};
+
+    return this.http.post('/login', {email: useremail, password: password})
       .map((response) => {
-        // login successful if there's a jwt token in the response
-        const token = response.json() && response.json().token;
-        if (token) {
+        // login successful if there's a user object in the response
+        if (response) {
+          console.log("response:",response);
+          const token = JSON.stringify(response);
           this.saveToken(token);
 
           // return true to indicate successful login
@@ -46,16 +54,16 @@ export class AuthenticationService {
 
   register(user) {
     console.log(user);
-    return this.http.post('/api/register', {
+    return this.http.post('/register', {
       fname: user.firstName,
       lname: user.lastName,
       password: user.password,
       email: user.email
     })
       .map(res => {
-        const token = res.json() && res.json().token;
-        console.log(token);
-        if (token) {
+        if(res){
+          const token = JSON.stringify(res);
+          console.log(token);
           this.saveToken(token);
           return true;
         } else {
@@ -74,11 +82,13 @@ export class AuthenticationService {
   isLoggedIn() {
     const token = this.getToken();
     if (token) {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.exp > Date.now() / 1000;
-
+      console.log("inside authentication yes token");
+      const payload = JSON.parse(token);
+      console.log("expire date",payload.expiryDate);
+      return payload.expiryDate > Date.now();
     }
     else {
+      console.log("inside authentication no token");
       return false;
     }
   }
@@ -86,13 +96,18 @@ export class AuthenticationService {
   // Returns the user if user is logged in, or returns false if not logged in
   currentUser() {
     if (this.isLoggedIn()) {
-      const token = this.getToken;
-      const payload = JSON.parse(atob(token().split('.')[1]));
+      const token = this.getToken();
+      const payload = JSON.parse(token);
       const user = {
         name: payload.fname,
         email: payload.email,
-        role: payload.role
+        userId: payload.userId,
+        role:"",
+        expiryDate: payload.expiryDate
       };
+      if(payload.authorities){
+        user.role =  payload.authorities[0].name;
+      }
       return user;
     }
     else return null;

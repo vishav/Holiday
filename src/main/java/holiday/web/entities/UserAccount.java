@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -22,10 +23,10 @@ public class UserAccount extends ResourceSupport{
 	public UserAccount(UserAccount user)
 	{
 		this.setUserId(user.getUserId());
-		this.setUserName(user.getUserName());
+//		this.setUserName(user.getUserName());
 		this.setEmail(user.getEmail());
 		this.setPassword(user.getPassword());
-		this.setContactNo(user.getContactNo());
+//		this.setContactNo(user.getContactNo());
 	}
 	
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,19 +41,29 @@ public class UserAccount extends ResourceSupport{
     @Transient
     private boolean isAuthenticated ;
 
-    private String userName;
+//    private String userName;
 
 	@Column(length = 100)
 	private String password; // encrypt and use ssl
  
     private String email;
     
-    private String contactNo;
+//    private String contactNo;
 
+    private String fname;
+
+    private String lname;
 
     @JsonIgnore
     @OneToMany(mappedBy="userAccount")
     private List<CheckoutOrder> checkoutOrder = new ArrayList<CheckoutOrder>();
+
+	@JsonIgnore
+	@OneToOne(mappedBy="userAccount")
+	private ShoppingCart shoppingCart;
+
+	@Transient
+	private long expiryDate;
 
 	public Long getUserId() {
 		return userId;
@@ -62,13 +73,13 @@ public class UserAccount extends ResourceSupport{
 		this.userId = userId;
 	}
 
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+//	public String getUserName() {
+//		return userName;
+//	}
+//
+//	public void setUserName(String userName) {
+//		this.userName = userName;
+//	}
 
 	public String getEmail() {
 		return email;
@@ -78,13 +89,13 @@ public class UserAccount extends ResourceSupport{
 		this.email = email;
 	}
 
-	public String getContactNo() {
-		return contactNo;
-	}
-
-	public void setContactNo(String contactNo) {
-		this.contactNo = contactNo;
-	}
+//	public String getContactNo() {
+//		return contactNo;
+//	}
+//
+//	public void setContactNo(String contactNo) {
+//		this.contactNo = contactNo;
+//	}
 
 	public String getPassword() {
 		return password;
@@ -110,6 +121,13 @@ public class UserAccount extends ResourceSupport{
 		this.checkoutOrder = checkoutOrder;
 	}
 
+	public ShoppingCart getShoppingCart() {
+		return shoppingCart;
+	}
+
+	public void setShoppingCart(ShoppingCart shoppingCart) {
+		this.shoppingCart = shoppingCart;
+	}
 
 	public Set<Role> getRoles() {
 		return roles;
@@ -119,4 +137,27 @@ public class UserAccount extends ResourceSupport{
 		this.roles = roles;
 	}
 
+	public String getFname() {
+		return fname;
+	}
+
+	public void setFname(String fname) {
+		this.fname = fname;
+	}
+
+	public String getLname() {
+		return lname;
+	}
+
+	public void setLname(String lname) {
+		this.lname = lname;
+	}
+
+	public long getExpiryDate() {
+		return expiryDate;
+	}
+
+	public void setExpiryDate(long expiryDate) {
+		this.expiryDate = expiryDate;
+	}
 }

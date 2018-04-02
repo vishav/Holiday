@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SearchQuery } from "../../models/SearchQuery";
 import { ShoppingcartService } from "../../services/shoppingcart.service";
 import { PaymentService } from "../../services/payment.service";
+import {PricingService} from "../../services/pricing.service";
 
 @Component({
   selector: 'app-checkout',
@@ -24,6 +25,7 @@ export class CheckoutComponent implements OnInit {
   res: any;
 
   constructor(private cartservice: ShoppingcartService,
+              private pricingservice: PricingService,
               private paymentservice: PaymentService) {
   }
 
@@ -35,7 +37,7 @@ export class CheckoutComponent implements OnInit {
       console.log(this.total);
     });
 
-    this.paymentservice.getPricing().subscribe(pricing => {
+    this.pricingservice.getPricing().subscribe(pricing => {
       if (pricing) {
         this.pricing = pricing;
       }

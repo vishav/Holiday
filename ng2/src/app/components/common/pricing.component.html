@@ -3,7 +3,7 @@
 
   <h4>Pricing Details.</h4>
 
-  <div *ngIf="role !='administrator'; else authcheckblock ">
+  <div *ngIf="role !='ROLE_ADMIN'; else authcheckblock ">
     Price Per Country Per Year: ${{pricing?.countryPrice}} <br/>
     Price Per State Per Year: ${{pricing?.statePrice}} <br/>
     Price Per City Per Year: ${{pricing?.cityPrice}} <br/>
@@ -16,7 +16,7 @@
     <div class="alert alert-danger" *ngIf="failuremessage" role="alert">
       {{failuremessage}}
     </div>
-    <div *ngIf="role =='administrator'">
+    <div *ngIf="role =='ROLE_ADMIN'">
       <form name="form" (ngSubmit)="f.form.valid && savePricing()" #f="ngForm" novalidate>
         <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !countryPrice.valid }">
           <label for="countryPrice">Price Per Country Per Year: $</label>

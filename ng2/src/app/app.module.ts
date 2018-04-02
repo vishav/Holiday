@@ -37,6 +37,7 @@ import { ResetrequestComponent } from './components/resetrequest/resetrequest.co
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TransactionComponent } from './components/admin/transaction/transaction.component';
 import { TransactionService } from './services/transaction.service';
+import {PricingService} from "./services/pricing.service";
 
 // Define the routes
 
@@ -80,7 +81,8 @@ import { TransactionService } from './services/transaction.service';
     PaymentService,
     UsersService,
     OrderService,
-    TransactionService
+    TransactionService,
+    PricingService
   ],
   bootstrap: [AppComponent]
 })

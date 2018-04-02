@@ -35,10 +35,10 @@ public class OrderService {
     public CheckoutOrder getOrder(Long id)
     {
         CheckoutOrder checkoutOrder = orderRepository.findOne(id);
-        checkoutOrder.add(linkTo(methodOn(OrderController.class).getOrder(id)).withSelfRel());
+        /*checkoutOrder.add(linkTo(methodOn(OrderController.class).getOrder(id)).withSelfRel());
         checkoutOrder.add(linkTo(methodOn(ItemController.class).addItem(new Item())).withRel("add"));
         checkoutOrder.add(linkTo(methodOn(OrderController.class).updateOrder(checkoutOrder)).withRel("update"));
-        checkoutOrder.add(linkTo(methodOn(ItemController.class).getAllItems(id)).withRel("orders"));
+        checkoutOrder.add(linkTo(methodOn(ItemController.class).getAllItems(id)).withRel("orders"));*/
         return checkoutOrder;
     }
 
@@ -46,10 +46,10 @@ public class OrderService {
     {
 
         CheckoutOrder c = orderRepository.save(checkoutOrder);
-        checkoutOrder.add(linkTo(methodOn(OrderController.class).getOrder(c.getOrderId())).withSelfRel());
+/*        checkoutOrder.add(linkTo(methodOn(OrderController.class).getOrder(c.getOrderId())).withSelfRel());
         checkoutOrder.add(linkTo(methodOn(ItemController.class).addItem(new Item())).withRel("add"));
         checkoutOrder.add(linkTo(methodOn(OrderController.class).updateOrder(checkoutOrder)).withRel("update"));
-        checkoutOrder.add(linkTo(methodOn(ItemController.class).getAllItems(c.getOrderId())).withRel("orders"));
+        checkoutOrder.add(linkTo(methodOn(ItemController.class).getAllItems(c.getOrderId())).withRel("orders"));*/
         return checkoutOrder;
     }
 

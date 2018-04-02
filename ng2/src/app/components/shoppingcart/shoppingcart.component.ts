@@ -4,6 +4,7 @@ import { PaymentService } from "../../services/payment.service";
 
 import { SearchQuery } from "../../models/SearchQuery";
 import { Router } from '@angular/router';
+import {PricingService} from "../../services/pricing.service";
 
 @Component({
   selector: 'app-shoppingcart',
@@ -19,14 +20,14 @@ export class ShoppingcartComponent implements OnInit {
   total: number;
 
   constructor(private cartservice: ShoppingcartService,
-              private paymentservice: PaymentService,
+              private pricingservice: PricingService,
               private router: Router) {
   }
 
   ngOnInit() {
     //this.price = this.cartservice.getPricePerYear();
 
-    this.paymentservice.getPricing().subscribe(pricing => {
+    this.pricingservice.getPricing().subscribe(pricing => {
       if (pricing) {
         this.pricing = pricing;
       }
@@ -36,8 +37,8 @@ export class ShoppingcartComponent implements OnInit {
         if (usercartitems) {
           console.log("shopping cart component");
           console.log(usercartitems);
+          this.cartitems = usercartitems;
         }
-        this.cartitems = usercartitems;
         this.total = this.totalprice();
         //console.log("shoppingcart component: " + this.cartitems[0].country);
       });

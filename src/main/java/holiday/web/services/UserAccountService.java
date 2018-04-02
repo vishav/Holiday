@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -48,81 +49,71 @@ public class UserAccountService implements UserDetailsService {
     @Autowired
     private RoleRepository roleRepository;
 
-    public List<UserAccount>  getAllUsers()
-    {
-        return StreamSupport.stream(userAccountRepository.findAll().spliterator(),false)
-                .map(u -> {u.setPassword(null); u.add(linkTo(methodOn(UserAccountController.class).getUser(u.getUserId())).withSelfRel()); return u;})
+    public List<UserAccount> getAllUsers() {
+        return StreamSupport.stream(userAccountRepository.findAll().spliterator(), false)
+                .map(u -> {
+                    u.setPassword(null);
+                    u.add(linkTo(methodOn(UserAccountController.class).getUser(u.getUserId())).withSelfRel());
+                    return u;
+                })
                 .collect(Collectors.toList());
     }
 
-    public UserAccount getUser(Long id)
-    {
+    public UserAccount getUser(Long id) {
         UserAccount u = userAccountRepository.findOne(id);
         u.setPassword(null);
         u.add(linkTo(methodOn(UserAccountController.class).getUser(u.getUserId())).withSelfRel());
         u.add(linkTo(methodOn(UserAccountController.class).AuthenticateUser(u)).withRel("auth"));
         u.add(linkTo(methodOn(UserAccountController.class).updateUser(u)).withRel("update"));
-        return  u;
+        return u;
     }
 
-    public UserAccount authenticateUser(UserAccount user)
-    {
-        if(user == null) return null;
+    public UserAccount authenticateUser(UserAccount user) {
+        if (user == null) return null;
         UserAccount authenticatedUserAccount = null;
-        authenticatedUserAccount = loadUserByUsername(user.getUserName());
-        if(authenticatedUserAccount != null)
-        {
-             if(matchEncodedStrings(user.getPassword(),authenticatedUserAccount.getPassword()));
-             {
-                 authenticatedUserAccount.setAuthenticated(true);
-                 Long id = authenticatedUserAccount.getUserId();
-                 authenticatedUserAccount.add(linkTo(methodOn(UserAccountController.class).getUser(id)).withSelfRel());
-                 authenticatedUserAccount.add(linkTo(methodOn(OrderController.class).getAllOrders(id)).withRel("checkouts"));
-             }
-            authenticatedUserAccount.setPassword(null);
+        authenticatedUserAccount = loadUserByUsername(user.getEmail());
+        if (authenticatedUserAccount != null && matchEncodedStrings(user.getPassword(), authenticatedUserAccount.getPassword())) {
+            System.out.println("user password matched");
+            authenticatedUserAccount.setAuthenticated(true);
+//            Long id = authenticatedUserAccount.getUserId();
+/*                authenticatedUserAccount.add(linkTo(methodOn(UserAccountController.class).getUser(id)).withSelfRel());
+                authenticatedUserAccount.add(linkTo(methodOn(OrderController.class).getAllOrders(id)).withRel("checkouts"));*/
+        } else {
+            return null;
         }
+        authenticatedUserAccount.setPassword(null);
+        authenticatedUserAccount.setExpiryDate(System.currentTimeMillis() + 7 * 86400000);
+
         return authenticatedUserAccount;
     }
 
-    public boolean matchEncodedStrings(String rawPassword, String hashPassword)
-    {
-        if(encoder.matches(rawPassword,hashPassword))return true;
+    public boolean matchEncodedStrings(String rawPassword, String hashPassword) {
+        if (encoder.matches(rawPassword, hashPassword)) return true;
         return false;
     }
 
-    public UserAccount saveUser(UserAccount userAccount)
-    {
-        UserAccount u = null;
-        if(userAccount.getUserName()==null)return null;
-        u = userAccountRepository.findByUserName(userAccount.getUserName());
-        if(u != null)
-        {
-            u.setEmail(userAccount.getEmail());
-            u.setContactNo(userAccount.getContactNo());  // update existing
-        }
-        else
-        {
-            if(userAccount.getPassword() == null)return null;
-            u = userAccount;   //register
-            u.setPassword(encoder.encode(userAccount.getPassword()));
-            Set<Role> roles = new HashSet<>();
-            roles.add(roleRepository.findByName("ROLE_USER"));
-            u.setRoles(roles);
+    public UserAccount saveUser(UserAccount userAccount) {
+        System.out.println("saving user");
+        if (userAccount.getEmail() == null || userAccount.getPassword() == null) return null;
 
-        }
+        // if email already registered, throw error
+ /*       if(userAccountRepository.findByEmail(userAccount.getEmail())!=null){
 
-        u = userAccountRepository.save(u);
-        u.add(linkTo(methodOn(UserAccountController.class).getUser(u.getUserId())).withSelfRel());
-        u.add(linkTo(methodOn(UserAccountController.class).AuthenticateUser(u)).withRel("auth"));
-        u.add(linkTo(methodOn(UserAccountController.class).updateUser(u)).withRel("update"));
-        u.setPassword(null);
-        return  u;
+        }*/
+        userAccount.setPassword(encoder.encode(userAccount.getPassword()));
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleRepository.findByName("ROLE_USER"));
+        userAccount.setRoles(roles);
+
+        userAccount = userAccountRepository.save(userAccount);
+
+        userAccount.setExpiryDate(System.currentTimeMillis() + 7 * 86400000);
+        userAccount.setPassword(null);
+        return userAccount;
     }
 
 
-
-    public void deleteUser(UserAccount userAccount)
-    {
+    public void deleteUser(UserAccount userAccount) {
         userAccountRepository.delete(userAccount.getUserId());
     }
 
@@ -134,11 +125,11 @@ public class UserAccountService implements UserDetailsService {
         String token = UUID.randomUUID().toString();
         createPasswordResetTokenForUser(u, token);
 
-        String url = linkTo(methodOn(UserAccountController.class).resetPassword(u.getUserId(),token,u)).toString().replace("resetPassword","changePassword.html");
+        String url = linkTo(methodOn(UserAccountController.class).resetPassword(u.getUserId(), token, u)).toString().replace("resetPassword", "changePassword.html");
         String message = "Click the link to Reset Password";
 
         String body = message + " \r\n" + url;
-        Notification notification = new Notification(u,body);
+        Notification notification = new Notification(u, body);
         try {
             notification.sendEmailMessage();
         } catch (MessagingException e) {
@@ -151,14 +142,12 @@ public class UserAccountService implements UserDetailsService {
         PasswordResetToken myToken = new PasswordResetToken(token, user);
         passwordTokenRepository.save(myToken);
     }
-    @Override
-    public CustomUserDetails loadUserByUsername(String name) throws UsernameNotFoundException
-    {
+
+    public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserAccount authenticatedUserAccount = null;
-        authenticatedUserAccount = userAccountRepository.findByUserName(name);
-        if(authenticatedUserAccount == null)
-        {
-            throw new UsernameNotFoundException("Username " + name + " not found");
+        authenticatedUserAccount = userAccountRepository.findByEmail(email);
+        if (authenticatedUserAccount == null) {
+            throw new UsernameNotFoundException("Username " + email + " not found");
         }
         return new CustomUserDetails(authenticatedUserAccount);
     }
@@ -167,15 +156,14 @@ public class UserAccountService implements UserDetailsService {
 
         String result = validatePasswordResetToken(id, token);
         if (result != null) {
-          return null;
+            return null;
         }
         //update password
         UserAccount u = null;
         u = userAccountRepository.findByEmail(userToUpdate.getEmail());
-        if(u != null)
-        {
-            if(u.getUserId() != id)return null;
-            if(userToUpdate.getPassword() == null)return null;
+        if (u != null) {
+            if (u.getUserId() != id) return null;
+            if (userToUpdate.getPassword() == null) return null;
             u.setPassword(encoder.encode(userToUpdate.getPassword()));
         }
 
@@ -184,7 +172,7 @@ public class UserAccountService implements UserDetailsService {
         u.add(linkTo(methodOn(UserAccountController.class).AuthenticateUser(u)).withRel("auth"));
         u.add(linkTo(methodOn(UserAccountController.class).updateUser(u)).withRel("update"));
         u.setPassword(null);
-        return  u;
+        return u;
 
     }
 

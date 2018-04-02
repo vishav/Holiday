@@ -42,6 +42,7 @@ export class RegisterComponent implements OnInit {
             });
 
           } else {
+            console.log("result:",result);
             this.error = 'Registration unsuccessful';
             this.loading = false;
           }

@@ -15,7 +15,7 @@ export class TransactionService {
     const options = new RequestOptions({headers: headers});
     const model = (JSON.stringify(data.model));
     const parameter = data.country + '/' + data.state + '/' + data.city + '/' + model + '/' + data.fromDate + '/' + data.toDate;
-    return this.http.get('/api/transactions/' + parameter, options).map(res => res.json());
+    return this.http.get('/transactions/' + parameter, options).map(res => res.json());
   }
 
   downloadTransactions(data){
@@ -24,7 +24,7 @@ export class TransactionService {
     const options = new RequestOptions({headers: headers, responseType: ResponseContentType.Blob});
     const model = (JSON.stringify(data.model));
     const parameter = data.country + '/' + data.state + '/' + data.city + '/' + model + '/' + data.fromDate + '/' + data.toDate;
-    return this.http.get('/api/download/' + parameter, options);
+    return this.http.get('/download/' + parameter, options);
   }
 
   refundTransaction(data) {
@@ -33,7 +33,7 @@ export class TransactionService {
     });
     headers.append('Authorization', 'Bearer ' + this.authentication.getToken());
     const options = new RequestOptions({headers: headers});
-    return this.http.post('/api/refund', JSON.stringify({
+    return this.http.post('/refund', JSON.stringify({
       paymentid: data.paymentid,
       refundAmount: data.refundAmount
     }), options)

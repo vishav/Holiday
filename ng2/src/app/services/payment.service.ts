@@ -24,7 +24,7 @@ export class PaymentService {
       'Content-Type': 'application/json'
     });
     const options = new RequestOptions({headers: headers});
-    this.http.post('/api/create', JSON.stringify({
+    this.http.post('/create', JSON.stringify({
       expmon: data.expire_month,
       expyear: data.expire_year,
       fname: data.first_name,
@@ -60,29 +60,6 @@ export class PaymentService {
 
   getPaymentDetails(paymentid) {
     console.log(paymentid);
-    return this.http.get('/api/payment/' + paymentid).map(res => res.json());
-  }
-
-  getPricing() {
-    const headers = new Headers({'Accept': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-    return this.http.get('/api/pricing/', options)
-      .map(res => res.json());
-  }
-
-  savePricing(data) {
-    const headers = new Headers({'Content-Type': 'application/json', 'Accept': 'application/json'});
-    headers.append('Authorization', 'Bearer ' + this.authservice.getToken());
-    const options = new RequestOptions({headers: headers});
-
-    const parameters = {countryPrice: data.countryPrice, statePrice: data.statePrice, cityPrice: data.cityPrice, minPrice: data.minPrice};
-    return this.http.post('/api/savepricing', JSON.stringify({parameters: parameters}), options)
-      .map(res => {
-        if(res.status !== 200){
-          throw new Error('This request has failed ' + res.status);
-        }else {
-          return res.json()
-        }
-      });
+    return this.http.get('/payment/' + paymentid).map(res => res.json());
   }
 }

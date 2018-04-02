@@ -25,14 +25,14 @@ export class OrderService {
       headers.append('Authorization', 'Bearer ' + this.authservice.getToken());
 
       let options = new RequestOptions({headers: headers});
-      this.http.post('/api/orders', JSON.stringify({
+      this.http.post('/orders', JSON.stringify({
         useremail: user.email,
         cartItems: cartitems,
         paymentid: paymentid,
         total: total
       }), options)
         .map((response) => {
-          if (response.status === 200) {
+          if (response) {
             console.log("saved cart successfully to db");
             // return true to indicate successful saved
             return true;
@@ -74,7 +74,7 @@ export class OrderService {
 
       var user = this.authservice.currentUser();
 
-      return this.http.get('/api/orders/' + user.email, options)
+      return this.http.get('/orders/' + user.email, options)
         .map(res => res.json());
     }
   }

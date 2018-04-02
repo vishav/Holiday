@@ -13,7 +13,7 @@ export class NavbarComponent implements OnInit {
   currentUser: any;
   isloggedin: boolean;
   @Input() cartnumber: number;
-  numitems: number;
+  numitems= 0;
   route: string;
   selection: number;
   role: string;
@@ -52,7 +52,9 @@ export class NavbarComponent implements OnInit {
     //this.numitems = this.cartservice.getItemNum();
 
     this.cartservice.getShoppingCart().subscribe(cartItems => {
-      this.numitems = cartItems.length;
+      if(cartItems) {
+        this.numitems = cartItems.length;
+      }
       console.log("cartnumber" + this.numitems);
     });
 
