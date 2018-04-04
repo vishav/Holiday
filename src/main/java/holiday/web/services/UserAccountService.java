@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.core.DummyInvocationUtils.methodOn;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+//import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 
 /**
@@ -53,7 +53,7 @@ public class UserAccountService implements UserDetailsService {
         return StreamSupport.stream(userAccountRepository.findAll().spliterator(), false)
                 .map(u -> {
                     u.setPassword(null);
-                    u.add(linkTo(methodOn(UserAccountController.class).getUser(u.getUserId())).withSelfRel());
+//                    u.add(linkTo(methodOn(UserAccountController.class).getUser(u.getUserId())).withSelfRel());
                     return u;
                 })
                 .collect(Collectors.toList());
@@ -62,9 +62,9 @@ public class UserAccountService implements UserDetailsService {
     public UserAccount getUser(Long id) {
         UserAccount u = userAccountRepository.findOne(id);
         u.setPassword(null);
-        u.add(linkTo(methodOn(UserAccountController.class).getUser(u.getUserId())).withSelfRel());
-        u.add(linkTo(methodOn(UserAccountController.class).AuthenticateUser(u)).withRel("auth"));
-        u.add(linkTo(methodOn(UserAccountController.class).updateUser(u)).withRel("update"));
+//        u.add(linkTo(methodOn(UserAccountController.class).getUser(u.getUserId())).withSelfRel());
+//        u.add(linkTo(methodOn(UserAccountController.class).AuthenticateUser(u)).withRel("auth"));
+//        u.add(linkTo(methodOn(UserAccountController.class).updateUser(u)).withRel("update"));
         return u;
     }
 
@@ -125,7 +125,8 @@ public class UserAccountService implements UserDetailsService {
         String token = UUID.randomUUID().toString();
         createPasswordResetTokenForUser(u, token);
 
-        String url = linkTo(methodOn(UserAccountController.class).resetPassword(u.getUserId(), token, u)).toString().replace("resetPassword", "changePassword.html");
+        String url="";
+//        String url = linkTo(methodOn(UserAccountController.class).resetPassword(u.getUserId(), token, u)).toString().replace("resetPassword", "changePassword.html");
         String message = "Click the link to Reset Password";
 
         String body = message + " \r\n" + url;
@@ -168,9 +169,9 @@ public class UserAccountService implements UserDetailsService {
         }
 
         u = userAccountRepository.save(u);
-        u.add(linkTo(methodOn(UserAccountController.class).getUser(u.getUserId())).withSelfRel());
-        u.add(linkTo(methodOn(UserAccountController.class).AuthenticateUser(u)).withRel("auth"));
-        u.add(linkTo(methodOn(UserAccountController.class).updateUser(u)).withRel("update"));
+//        u.add(linkTo(methodOn(UserAccountController.class).getUser(u.getUserId())).withSelfRel());
+//        u.add(linkTo(methodOn(UserAccountController.class).AuthenticateUser(u)).withRel("auth"));
+//        u.add(linkTo(methodOn(UserAccountController.class).updateUser(u)).withRel("update"));
         u.setPassword(null);
         return u;
 

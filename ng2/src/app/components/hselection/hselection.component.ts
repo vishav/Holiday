@@ -212,13 +212,18 @@ export class HselectionComponent implements OnInit {
       data.toDay = 31;
     }
     console.log(data);
-    this.cartservice.addItem(data);
-
-    this.cartservice.getShoppingCart().subscribe(cartItems =>
+    this.cartservice.addItem(data).subscribe(cartItems =>
     {
+      console.log('type of cartitems hselection:'+typeof(cartItems));
       this.cartnumber = cartItems.length;
       console.log('cartnumber' + this.cartnumber);
     });
+
+    // this.cartservice.getShoppingCart().subscribe(cartItems =>
+    // {
+    //   this.cartnumber = cartItems.length;
+    //   console.log('cartnumber' + this.cartnumber);
+    // });
 
   }
 }

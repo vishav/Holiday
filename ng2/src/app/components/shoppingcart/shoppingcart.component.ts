@@ -56,14 +56,19 @@ export class ShoppingcartComponent implements OnInit {
 
   removefromcart(index: number) {
     console.log("delete index: " + index);
-    this.cartservice.removeItem(index);
-    this.cartitems.splice(index, 1);
-    this.total = this.totalprice();
-    this.cartservice.getShoppingCart().subscribe(cartItems => {
+    this.cartservice.removeItem(index).subscribe(cartItems => {
+      console.log('type of cartitems shoppingcart:'+typeof(cartItems));
+      this.cartitems=cartItems;
       this.cartnumber = cartItems.length;
+      this.total = this.totalprice();
       console.log("cartnumber from delete:" + this.cartnumber);
     });
-
+    // this.cartitems.splice(index, 1);
+    // this.total = this.totalprice();
+    // this.cartservice.getShoppingCart().subscribe(cartItems => {
+    //   this.cartnumber = cartItems.length;
+    //   console.log("cartnumber from delete:" + this.cartnumber);
+    // });
   }
 
   totalprice() {

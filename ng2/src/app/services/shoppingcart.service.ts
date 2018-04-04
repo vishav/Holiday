@@ -49,20 +49,20 @@ export class ShoppingcartService {
     }
   }
 
-  addItem(cartItem: SearchQuery) {
+  addItem(cartItem: SearchQuery):Observable<SearchQuery[]> {
     if(!this.shoppingCart){
       this.shoppingCart = [];
       console.log("initalizing shopping cart")
     }
     this.shoppingCart.push(cartItem);
     console.log("adding item to cart: " + this.shoppingCart);
-    this.updateStorage();
+    return this.updateStorage();
   }
 
-  removeItem(index: number) {
+  removeItem(index: number):Observable<SearchQuery[]> {
     if (index < this.shoppingCart.length && index >= 0) {
       this.shoppingCart.splice(index, 1);
-      this.updateStorage();
+      return this.updateStorage();
     }
   }
 
@@ -150,7 +150,7 @@ export class ShoppingcartService {
   }
 
   // this function updates the locally stored cart to the server
-  private updateStorage() {
+  private updateStorage() : Observable<SearchQuery[]> {
     if (this.authenticationService.isLoggedIn()) {
       console.log("setting logged in users cart");
       var user = this.authenticationService.currentUser();
@@ -169,18 +169,18 @@ export class ShoppingcartService {
       let options = {headers};
       //console.log(headers);
 
-      this.http.post('/saveShoppingCart', JSON.stringify(this.shoppingCart
+      return this.http.post<SearchQuery[]>('/saveShoppingCart', JSON.stringify(this.shoppingCart
       ), options)
         .map((response) => {
 
           if (response) {
             console.log("saved cart successfully to db");
             // return true to indicate successful saved
-            return true;
+            return response;
           } else {
             console.log("error while saving cart to db. Status: " + response);
             // return false to indicate it did not save properly
-            return false;
+            return response;
           }
         })
         .catch((error, caught) => {
@@ -190,11 +190,10 @@ export class ShoppingcartService {
           }
           return Observable.throw(error);
         })
-        .subscribe();
-
     } else {
       console.log("setting non-logged in users cart");
       localStorage.setItem('mea2necomm-shopping-cart', JSON.stringify(this.shoppingCart));
+      return Observable.of(this.shoppingCart);
     }
 
   }
