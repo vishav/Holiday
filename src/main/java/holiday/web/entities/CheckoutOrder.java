@@ -44,7 +44,9 @@ public class CheckoutOrder extends ResourceSupport {
 	    @OneToMany(mappedBy="checkoutOrder", cascade=CascadeType.ALL)
 	    private List<Item> item = new ArrayList<Item>();
 
-	    public String getDateTime()
+		private Long paymentId;
+
+	public String getDateTime()
 		{
 			return DateTime;
 		}
@@ -95,6 +97,11 @@ public class CheckoutOrder extends ResourceSupport {
 			this.item = item;
 		}
 
-	   
-	
+	public Long getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(Long paymentId) {
+		this.paymentId = paymentId;
+	}
 }
