@@ -58,9 +58,4 @@ export class PaymentService {
           this.router.navigate(['/failure'])
         });
   }
-
-  getPaymentDetails(paymentid) {
-    console.log(paymentid);
-    return this.http.get('/payment/' + paymentid);
-  }
 }

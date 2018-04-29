@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 public class Payment {
 
 
-    private String expMon;
-    private String expYear;
+    private String expmon;
+    private String expyear;
     private String fname;
     private String lname;
     private String method;
@@ -15,20 +15,20 @@ public class Payment {
     private String type;
     private String cvv;
 
-    public String getExpMon() {
-        return expMon;
+    public String getExpmon() {
+        return expmon;
     }
 
-    public void setExpMon(String expMon) {
-        this.expMon = expMon;
+    public void setExpmon(String expmon) {
+        this.expmon = expmon;
     }
 
-    public String getExpYear() {
-        return expYear;
+    public String getExpyear() {
+        return expyear;
     }
 
-    public void setExpYear(String expYear) {
-        this.expYear = expYear;
+    public void setExpyear(String expyear) {
+        this.expyear = expyear;
     }
 
     public String getFname() {
@@ -90,8 +90,8 @@ public class Payment {
     @Override
     public String toString() {
         return "Payment{" +
-                "expMon='" + expMon + '\'' +
-                ", expYear='" + expYear + '\'' +
+                "expMon='" + expmon + '\'' +
+                ", expYear='" + expyear + '\'' +
                 ", fname='" + fname + '\'' +
                 ", lname='" + lname + '\'' +
                 ", method='" + method + '\'' +

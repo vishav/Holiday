@@ -71,9 +71,9 @@ export class ShoppingcartService {
     this.updateStorage();
   }
 
-  clearItems() {
+  clearItems(): Observable<SearchQuery[]> {
     this.shoppingCart = [];
-    this.updateStorage();
+    return this.updateStorage();
   }
 
   // this function integrates the locally stored cart with the server
@@ -169,6 +169,7 @@ export class ShoppingcartService {
       let options = {headers};
       //console.log(headers);
 
+      console.log("saving shopping cart");
       return this.http.post<SearchQuery[]>('/saveShoppingCart', JSON.stringify(this.shoppingCart
       ), options)
         .map((response) => {
