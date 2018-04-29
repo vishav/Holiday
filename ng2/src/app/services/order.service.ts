@@ -1,16 +1,17 @@
-import { Injectable } from '@angular/core';
-import { ShoppingcartService } from "./shoppingcart.service";
-import { AuthenticationService } from "./authentication.service";
-import { Headers, RequestOptions, Http } from '@angular/http';
-import { Observable } from 'rxjs'
-import { Router } from '@angular/router'
+import {Injectable} from '@angular/core';
+import {ShoppingcartService} from "./shoppingcart.service";
+import {AuthenticationService} from "./authentication.service";
+import {Observable} from 'rxjs'
+import {Router} from '@angular/router'
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {OrderItem} from "../models/OrderItem";
 
 @Injectable()
 export class OrderService {
 
   constructor(private cartservice: ShoppingcartService,
               private authservice: AuthenticationService,
-              private http: Http,
+              private http: HttpClient,
               private router: Router) {
   }
 
@@ -18,26 +19,27 @@ export class OrderService {
     this.cartservice.getShoppingCart().subscribe(cartitems => {
 
       var user = this.authservice.currentUser();
-      var headers = new Headers({
+      const headers = new HttpHeaders({
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Authorization': 'Bearer ' + this.authservice.getToken(),
+        'userId': user.userId.toString(),
       });
-      headers.append('Authorization', 'Bearer ' + this.authservice.getToken());
 
-      let options = new RequestOptions({headers: headers});
+      const options = {headers};
+
       this.http.post('/orders', JSON.stringify({
-        useremail: user.email,
-        cartItems: cartitems,
-        paymentid: paymentid,
+        item: cartitems,
+        paymentId: paymentid,
         total: total
       }), options)
         .map((response) => {
           if (response) {
-            console.log("saved cart successfully to db");
+            console.log("saved order successfully to db");
             // return true to indicate successful saved
             return true;
           } else {
-            console.log("error while saving cart to db. Status: " + response.status);
+            console.log("error while saving order to db. Status: " + response);
             // return false to indicate it did not save properly
             return false;
           }
@@ -50,11 +52,14 @@ export class OrderService {
           return Observable.throw(error);
         })
         .subscribe(res => {
-          if (res == true) {
-            this.cartservice.clearItems();
+          console.log("return order value type:", typeof(res));
+          if (res === true) {
+            console.log("clearing cart items");
+            this.cartservice.clearItems().subscribe();
             this.router.navigate(['/success'])
           }
           else {
+            console.log("not clearing cart items");
             this.router.navigate(['/failure'])
           }
         }, error => {
@@ -65,17 +70,18 @@ export class OrderService {
 
   }
 
-  getuserorders() {
+  getAllOrders():Observable<OrderItem[]> {
     if (this.authservice.isLoggedIn()) {
 
-      let headers = new Headers({'Accept': 'application/json'});
-      headers.append('Authorization', 'Bearer ' + this.authservice.getToken());
-      let options = new RequestOptions({headers: headers});
+      const user = this.authservice.currentUser();
+      const headers = new HttpHeaders({
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + this.authservice.getToken()
+      });
 
-      var user = this.authservice.currentUser();
+      const options = {headers};
 
-      return this.http.get('/orders/' + user.email, options)
-        .map(res => res.json());
+      return this.http.get<OrderItem[]>('/orders/' + user.userId, options);
     }
   }
 

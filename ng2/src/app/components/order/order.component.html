@@ -15,10 +15,11 @@
       </thead>
       <tbody>
       <tr class="warning" *ngFor="let order of orders; let i = index">
-        <td>{{order.date | date: 'yMd'}}</td>
+        <td>{{order.dateTime | date: 'yyyy-MM-dd'}}</td>
         <td><a data-toggle="modal" data-target="#orderModal" (click)="getorderdetails(i)">Order details </a></td>
-        <td><a data-toggle="modal" data-target="#payModal" (click)="getpayment(order.paymentid)">{{order.total |
-          currency:'USD':true:'.2-4'}}</a></td>
+        <td>{{order.total | currency}}</td>
+<!--        <td><a data-toggle="modal" data-target="#payModal" (click)="getpayment(order.paymentId)">{{order.total |
+          currency}}</a></td>-->
       </tr>
       </tbody>
     </table>
@@ -35,7 +36,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Note</h4>
+        <h4 class="modal-title">Order details</h4>
       </div>
       <div class="modal-body">
         <table class="table table-striped table-hover ">
@@ -57,7 +58,7 @@
             <td>{{item.fromMonth}}/{{item.fromDay}}/{{item.fromYear}}&nbsp;-&nbsp;{{item.toMonth}}/{{item.toDay}}/{{item.toYear}}</td>
             <td>
               <button type="button" class="btn btn-info" data-dismiss="modal"
-                      [routerLink]="['/holidaylist',item.country,item.state,item.city,item.fromYear,item.fromMonth,item.fromDay,item.toYear,item.toMonth,item.toDay]">
+                      [routerLink]="['/holidaylist',item.country,item.state,item.city,item.fromYear,item.fromMonth,item.fromDay,item.toYear,item.toMonth,item.toDay, orderId]">
                 View Holidays
               </button>
             </td>

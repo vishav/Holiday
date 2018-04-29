@@ -26,6 +26,7 @@ export class HolidaylistComponent implements OnInit {
   religion: string;
   errorMessage: string;
   route: any;
+  orderId: number;
 
   constructor(private activatedRoute: ActivatedRoute,
               private hselectionService: HselectionService,
@@ -53,6 +54,7 @@ export class HolidaylistComponent implements OnInit {
       this.toyear = params['toyear'];
       this.tomonth = params['tomonth'];
       this.today = params['today'];
+      this.orderId = params['orderId'];
 
       let data = {
         country: this.country,
@@ -78,7 +80,7 @@ export class HolidaylistComponent implements OnInit {
 
             });
       } else if (this.route == 'holidaylist') {
-        this.hselectionService.getHolidays(data)
+        this.hselectionService.getHolidays(data, this.orderId)
           .subscribe(
             holidays => {
               this.holidays = holidays;

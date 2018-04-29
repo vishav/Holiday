@@ -31,7 +31,7 @@ public class CheckoutOrder extends ResourceSupport {
 	    
 	    private String DateTime;
 
-	    @JsonIgnore
+//	    @JsonIgnore
 	    @ManyToOne
 	    @JoinColumn(name="user_id",foreignKey = @ForeignKey(name = "ORDER_USER"))
 	    private UserAccount userAccount;
@@ -40,11 +40,11 @@ public class CheckoutOrder extends ResourceSupport {
 		//@JsonIgnore
 	   // public int user_id ;
 
-	    @JsonIgnore
+//	    @JsonIgnore
 	    @OneToMany(mappedBy="checkoutOrder", cascade=CascadeType.ALL)
 	    private List<Item> item = new ArrayList<Item>();
 
-		private Long paymentId;
+		private String paymentId;
 
 	public String getDateTime()
 		{
@@ -97,11 +97,11 @@ public class CheckoutOrder extends ResourceSupport {
 			this.item = item;
 		}
 
-	public Long getPaymentId() {
-		return paymentId;
-	}
+		public String getPaymentId() {
+			return paymentId;
+		}
 
-	public void setPaymentId(Long paymentId) {
-		this.paymentId = paymentId;
-	}
+		public void setPaymentId(String paymentId) {
+			this.paymentId = paymentId;
+		}
 }

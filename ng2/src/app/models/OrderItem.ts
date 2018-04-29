@@ -1,7 +1,9 @@
 import { SearchQuery } from "./SearchQuery";
 
 export interface OrderItem {
+  orderId: number,
+  dateTime: string,
   paymentid: string,
-  useremail: string,
-  cartItems: SearchQuery[]
+  total: number,
+  item: SearchQuery[]
 }

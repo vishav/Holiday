@@ -25,31 +25,34 @@ public class OrderController {
     private ItemService itemService;
 
 
-    @RequestMapping("/users/{userId}/orders")
+    @RequestMapping("/orders/{userId}")
     public List<CheckoutOrder> getAllOrders(@PathVariable Long userId)
     {
         return orderService.getAllOrders(userId);
     }
 
-    @RequestMapping("/orders/{id}")
+/*    @RequestMapping("/orders/{id}")
     public CheckoutOrder getOrder(@PathVariable Long id)
     {
         return orderService.getOrder(id);
-    }
+    }*/
 
     @RequestMapping(method = RequestMethod.POST,value = "/orders")
-    public CheckoutOrder addOrder(@RequestBody List<Item> checkouts, @RequestHeader("user_id") Long user_id)
+    public CheckoutOrder addOrder(@RequestBody CheckoutOrder checkoutOrderTemp, @RequestHeader("userId") String userId)
     {
+        Long user_Id = Long.valueOf(userId);
+        List<Item> items = checkoutOrderTemp.getItem();
         UserAccount temp = new UserAccount();
-        temp.setUserId(user_id);
+        temp.setUserId(user_Id);
         CheckoutOrder checkoutOrder = new CheckoutOrder();
-        Double total = checkouts.stream().map(c -> c.getPrice()).reduce(0.0 , (x,y) -> x+y);
+        Double total = checkoutOrderTemp.getTotal();
         checkoutOrder.setTotal(total);
         temp.setCheckoutOrder(Arrays.asList((new CheckoutOrder[]{checkoutOrder})));
         checkoutOrder.setUserAccount(temp);
+        checkoutOrder.setPaymentId(checkoutOrderTemp.getPaymentId());
         CheckoutOrder savedCheckoutOrder = orderService.saveOrder(checkoutOrder);
-        savedCheckoutOrder.setItem(checkouts);
-        checkouts.stream().forEach(c -> {
+        savedCheckoutOrder.setItem(items);
+        items.stream().forEach(c -> {
             c.setCheckoutOrder(savedCheckoutOrder);
             itemService.saveItem(c);
         });

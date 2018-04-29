@@ -25,37 +25,23 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    public List<CheckoutOrder> getAllOrders(Long userId)
-    {
-        return StreamSupport.stream(orderRepository.findByUserAccountUserId(userId).spliterator(),false)
-                .map(c -> { c.add(linkTo(methodOn(OrderController.class).getAllOrders(userId)).withSelfRel()); return c;})
-                .collect(Collectors.toList());
+    public List<CheckoutOrder> getAllOrders(Long userId) {
+        return orderRepository.findByUserAccountUserId(userId);
     }
 
-    public CheckoutOrder getOrder(Long id)
-    {
+    public CheckoutOrder getOrder(Long id) {
         CheckoutOrder checkoutOrder = orderRepository.findOne(id);
-        /*checkoutOrder.add(linkTo(methodOn(OrderController.class).getOrder(id)).withSelfRel());
-        checkoutOrder.add(linkTo(methodOn(ItemController.class).addItem(new Item())).withRel("add"));
-        checkoutOrder.add(linkTo(methodOn(OrderController.class).updateOrder(checkoutOrder)).withRel("update"));
-        checkoutOrder.add(linkTo(methodOn(ItemController.class).getAllItems(id)).withRel("orders"));*/
         return checkoutOrder;
     }
 
-    public CheckoutOrder saveOrder(CheckoutOrder checkoutOrder)
-    {
+    public CheckoutOrder saveOrder(CheckoutOrder checkoutOrder) {
 
         CheckoutOrder c = orderRepository.save(checkoutOrder);
-/*        checkoutOrder.add(linkTo(methodOn(OrderController.class).getOrder(c.getOrderId())).withSelfRel());
-        checkoutOrder.add(linkTo(methodOn(ItemController.class).addItem(new Item())).withRel("add"));
-        checkoutOrder.add(linkTo(methodOn(OrderController.class).updateOrder(checkoutOrder)).withRel("update"));
-        checkoutOrder.add(linkTo(methodOn(ItemController.class).getAllItems(c.getOrderId())).withRel("orders"));*/
         return checkoutOrder;
     }
 
 
-    public void deleteOrder(CheckoutOrder checkoutOrder)
-    {
+    public void deleteOrder(CheckoutOrder checkoutOrder) {
         orderRepository.delete(checkoutOrder.getOrderId());
     }
 }

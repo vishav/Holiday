@@ -15,13 +15,14 @@ export class OrderComponent implements OnInit {
   orders: OrderItem[] = [];
   cartitems: SearchQuery[];
   payment: any;
+  orderId: number;
 
   constructor(private orderService: OrderService, private paymentservice: PaymentService) {
 
   }
 
   ngOnInit() {
-    this.orderService.getuserorders().subscribe(userorders => {
+    this.orderService.getAllOrders().subscribe(userorders => {
       if (userorders) {
         this.orders = userorders;
       }
@@ -30,14 +31,15 @@ export class OrderComponent implements OnInit {
   }
 
   getorderdetails(i) {
-    this.cartitems = this.orders[i].cartItems;
+    this.cartitems = this.orders[i].item;
+    this.orderId = this.orders[i].orderId;
   }
 
-  getpayment(val) {
+/*  getpayment(val) {
 
     this.paymentservice.getPaymentDetails(val).subscribe(res => {
       console.log(res);
       this.payment = res;
     });
-  }
+  }*/
 }

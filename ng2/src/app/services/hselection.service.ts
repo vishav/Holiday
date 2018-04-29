@@ -27,11 +27,13 @@ export class HselectionService {
     return this.http.get('/getFreeHolidays/countryStateCities/' + state + '/' + country);
   }
 
-  getHolidays(data) {
+  getHolidays(data, orderId) {
     console.log(this.authservice.getToken());
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Authorization': 'Bearer ' + this.authservice.getToken()
+      'Authorization': 'Bearer ' + this.authservice.getToken(),
+      'orderId': orderId.toString(),
+      'userId': this.authservice.currentUser().userId.toString()
     });
     const options = {headers};
     return this.http.get('/holidays/' + data.country + '/' + data.state + '/' + data.city + '/' + data.fromYear + '/' + data.fromMonth + '/' + data.fromDay + '/' + data.toYear + '/' + data.toMonth + '/' + data.toDay, options);
