@@ -1,6 +1,6 @@
 <p *ngIf="!isloggedin; else authcheckblock ">{{notloggederrormessage}}</p>
 <ng-template #authcheckblock>
-  <p *ngIf="role!='administrator'; else successBlock">{{unautherrormessage}}</p>
+  <p *ngIf="role!='ROLE_ADMIN'; else successBlock">{{unautherrormessage}}</p>
 </ng-template>
 
 <ng-template #successBlock>
@@ -27,9 +27,9 @@
       </thead>
       <tbody>
       <tr class="warning" *ngFor="let transaction of transactions; let idx = index">
-        <td>{{transaction.date | date: 'yMd'}}</td>
+        <td>{{transaction?.checkoutOrder?.dateTime}}</td>
         <td>{{transaction.fname}} {{transaction.lname}}</td>
-        <td>{{transaction.useremail}}</td>
+        <td>{{transaction.email}}</td>
         <td>
           <button type="button" class="btn btn-info " data-toggle="modal" data-target="#myModal" data-backdrop="static"
                   (click)="setindex(idx)">Order Detail
@@ -59,7 +59,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr class="warning" *ngFor="let item of transactions[this.index]?.cartItems">
+            <tr class="warning" *ngFor="let item of transactions[this.index]?.checkoutOrder?.item">
               <td *ngIf="item">{{item.country}}</td>
               <td *ngIf="item.state != 'State'">{{item.state}}</td>
               <td *ngIf="item.state == 'State'">No state Selected</td>
@@ -73,7 +73,7 @@
               <td></td>
               <td></td>
               <td>Total:</td>
-              <td>{{transactions[this.index]?.total | currency:'USD':true:'.2'}}</td>
+              <td>{{transactions[this.index]?.checkoutOrder.total | currency}}</td>
             </tr>
             </tbody>
           </table>

@@ -1,44 +1,53 @@
-import { Injectable } from '@angular/core';
-
-import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
-import { AuthenticationService } from './authentication.service';
+import {Injectable} from '@angular/core';
+import {AuthenticationService} from './authentication.service';
 import 'rxjs/add/operator/map';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {ResponseContentType} from "@angular/http";
 
 @Injectable()
 export class TransactionService {
 
-  constructor(private http: Http, private authentication: AuthenticationService) { }
+  constructor(private http: HttpClient, private authservice: AuthenticationService) { }
 
   getTransactions(data) {
-    const headers = new Headers({'Accept': 'application/json'});
-    headers.append('Authorization', 'Bearer ' + this.authentication.getToken());
-    const options = new RequestOptions({headers: headers});
-    const model = (JSON.stringify(data.model));
-    const parameter = data.country + '/' + data.state + '/' + data.city + '/' + model + '/' + data.fromDate + '/' + data.toDate;
-    return this.http.get('/transactions/' + parameter, options).map(res => res.json());
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + this.authservice.getToken()
+    });
+
+    const options = {headers};
+
+    const parameter = data.country + '/' + data.state + '/' + data.city + '/' + data.fname + '/' + data.lname + '/' + data.useremail + '/' + data.fromDate + '/' + data.toDate;
+    return this.http.get('/transactions/' + parameter, options);
   }
 
   downloadTransactions(data){
-    const headers = new Headers({'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-    headers.append('Authorization', 'Bearer ' + this.authentication.getToken());
-    const options = new RequestOptions({headers: headers, responseType: ResponseContentType.Blob});
-    const model = (JSON.stringify(data.model));
-    const parameter = data.country + '/' + data.state + '/' + data.city + '/' + model + '/' + data.fromDate + '/' + data.toDate;
+    const headers = new HttpHeaders({
+      'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + this.authservice.getToken()
+    });
+
+    const options = {headers, responseType:'blob' as 'blob'};
+
+    // const options = new RequestOptions({headers: headers, responseType: ResponseContentType.Blob});
+    const parameter = data.country + '/' + data.state + '/' + data.city + '/' + data.fname + '/' + data.lname + '/' + data.useremail + '/' + data.fromDate + '/' + data.toDate;
     return this.http.get('/download/' + parameter, options);
   }
 
   refundTransaction(data) {
-    const headers = new Headers({
-      'Content-Type': 'application/json'
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + this.authservice.getToken()
     });
-    headers.append('Authorization', 'Bearer ' + this.authentication.getToken());
-    const options = new RequestOptions({headers: headers});
+
+    const options = {headers};
+
     return this.http.post('/refund', JSON.stringify({
       paymentid: data.paymentid,
       refundAmount: data.refundAmount
-    }), options)
-      .map(res =>
-        res.json()
-      );
+    }), options);
   }
 }

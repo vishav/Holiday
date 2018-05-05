@@ -1,8 +1,8 @@
-import { Component, Input, OnChanges } from '@angular/core';
-import { TransactionService } from '../../../services/transaction.service';
-import { AuthenticationService } from '../../../services/authentication.service';
-// import { saveAs } from 'file-saver';
-import { isNullOrUndefined, isUndefined } from 'util';
+import {Component, Input, OnChanges} from '@angular/core';
+import {TransactionService} from '../../../services/transaction.service';
+import {AuthenticationService} from '../../../services/authentication.service';
+import { saveAs } from 'file-saver';
+import {TransactionResponse} from "../../../models/TransactionResponse";
 
 @Component({
   selector: 'app-transaction',
@@ -26,7 +26,7 @@ export class TransactionComponent implements OnChanges {
   isloggedin: boolean;
   index: any = null;
   refundAmount: 0;
-  refundMessage = '';
+  refundMessage = "";
   refundError = false;
   refundSuccess = false;
   minimumrefundamountmessage = 'You can only refund amount greater than $.01 and  less than the total amount.';
@@ -54,7 +54,9 @@ export class TransactionComponent implements OnChanges {
       city: this.city,
       fromDate: this.fromDate,
       toDate: this.toDate,
-      model: this.model
+      fname: this.model.fname,
+      lname: this.model.lname,
+      useremail: this.model.useremail
     };
     this.transactionservice.getTransactions(data)
       .subscribe(transactions => {
@@ -68,8 +70,8 @@ export class TransactionComponent implements OnChanges {
       );
   }
 
-  setindex(index) {
-    this.index = index;
+  setindex(idx) {
+    this.index = idx;
     this.resetMessages();
   }
 
@@ -80,7 +82,9 @@ export class TransactionComponent implements OnChanges {
       city: this.city,
       fromDate: this.fromDate,
       toDate: this.toDate,
-      model: this.model
+      fname: this.model.fname,
+      lname: this.model.lname,
+      useremail: this.model.useremail
     };
     this.transactionservice.downloadTransactions(data)
       .subscribe(transactiondetails => {
@@ -98,9 +102,10 @@ export class TransactionComponent implements OnChanges {
     const date = new Date();
     let currenttime = (date.getMonth() + 1) + '-' + date.getDate() + '-' + date.getFullYear();
     currenttime += 'T' + date.getHours() + ':' + date.getMinutes();
+    console.log("creating file");
     const filename = 'Transaction_Details_' + currenttime + '.xlsx';
-    const blob = new Blob([data._body], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-    // saveAs(blob, filename);
+    const blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'});
+    saveAs(blob, filename);
     console.log('file downloaded');
   }
 
@@ -122,7 +127,7 @@ export class TransactionComponent implements OnChanges {
         'refundAmount': amount
       };
       console.log('refundamount:', amount);
-      this.transactionservice.refundTransaction(data).subscribe(result => {
+      this.transactionservice.refundTransaction(data).subscribe((result: TransactionResponse) => {
           if (result.success) {
             this.refundMessage = 'Refund initiated successfully';
             this.refundSuccess = true;
@@ -140,7 +145,7 @@ export class TransactionComponent implements OnChanges {
     }
   }
 
-  resetMessages(){
+  resetMessages() {
     this.refundMessage = '';
     this.refundError = false;
     this.refundSuccess = false;

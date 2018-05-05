@@ -1,9 +1,8 @@
 package holiday.web.services;
 
-import holiday.web.controllers.OrderController;
-import holiday.web.controllers.UserAccountController;
 import holiday.web.entities.PasswordResetToken;
 import holiday.web.entities.Role;
+import holiday.web.entities.TransactionResponse;
 import holiday.web.entities.UserAccount;
 import holiday.web.repositories.PasswordTokenRepository;
 import holiday.web.repositories.RoleRepository;
@@ -25,8 +24,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static org.springframework.hateoas.core.DummyInvocationUtils.methodOn;
 //import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 
@@ -57,6 +54,7 @@ public class UserAccountService implements UserDetailsService {
                     return u;
                 })
                 .collect(Collectors.toList());
+
     }
 
     public UserAccount getUser(Long id) {
@@ -199,5 +197,11 @@ public class UserAccountService implements UserDetailsService {
                 new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
         SecurityContextHolder.getContext().setAuthentication(auth);
         return null;
+    }
+
+    public List<TransactionResponse> getAllTransactions(String email, String fname, String lname, String country, String state, String city, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<TransactionResponse> transactionResponse = userAccountRepository.findTransactions(email, fname, lname, country, state, city, fromDate, toDate);
+
+        return transactionResponse;
     }
 }

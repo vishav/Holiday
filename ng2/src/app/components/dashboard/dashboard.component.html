@@ -2,7 +2,7 @@
 
 <div class="alert alert-warning" role="alert" *ngIf="!isloggedin; else authcheckblock ">{{notloggederrormessage}}</div>
 <ng-template #authcheckblock>
-  <div class="alert alert-danger" role="alert" *ngIf="role!='administrator'; else successBlock">{{unautherrormessage}}</div>
+  <div class="alert alert-danger" role="alert" *ngIf="role!='ROLE_ADMIN'; else successBlock">{{unautherrormessage}}</div>
 </ng-template>
 
 <ng-template #successBlock>

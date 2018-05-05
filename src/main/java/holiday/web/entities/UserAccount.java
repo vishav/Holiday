@@ -1,5 +1,6 @@
 package holiday.web.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.hateoas.ResourceSupport;
 
@@ -54,7 +55,8 @@ public class UserAccount extends ResourceSupport{
 
     private String lname;
 
-    @JsonIgnore
+//    @JsonIgnore
+//	@JsonBackReference
     @OneToMany(mappedBy="userAccount")
     private List<CheckoutOrder> checkoutOrder = new ArrayList<CheckoutOrder>();
 

@@ -166,11 +166,39 @@ export class DashboardComponent implements OnInit {
     this.tempcity = this.selectedcity;
     this.tempfromDate = this.fromDate;
     this.temptoDate = this.toDate;
+
+    if(this.tempfromDate){
+      this.tempfromDate = this.tempfromDate.toISOString().split('T')[0];
+    }else{
+      this.tempfromDate = "000000";
+    }
+
+    if(this.temptoDate){
+      this.temptoDate = this.temptoDate.toISOString().split('T')[0];
+    }else{
+      this.temptoDate = "000000";
+    }
+
     this.tempmodel = {};
-    this.tempmodel.fname = this.model.fname;
-    this.tempmodel.lname = this.model.lname;
-    this.tempmodel.useremail = this.model.useremail;
-    this.fromDate = null;
-    this.toDate = null;
+    if(this.model.fname) {
+      this.tempmodel.fname = this.model.fname;
+    }else{
+      this.tempmodel.fname = "000000";
+    }
+
+    if(this.model.lname) {
+      this.tempmodel.lname = this.model.lname;
+    }else{
+      this.tempmodel.lname = "000000";
+    }
+
+    if(this.model.useremail) {
+      this.tempmodel.useremail = this.model.useremail;
+    }else{
+      this.tempmodel.useremail = "000000";
+    }
+
+/*    this.fromDate = null;
+    this.toDate = null;*/
   }
 }
