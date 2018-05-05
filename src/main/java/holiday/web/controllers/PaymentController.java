@@ -1,9 +1,8 @@
 package holiday.web.controllers;
 
 import holiday.web.entities.Payment;
-import holiday.web.services.OrderService;
 import holiday.web.services.PaymentService;
-import holiday.web.utilities.PaymentResponse;
+import holiday.web.entities.PaymentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

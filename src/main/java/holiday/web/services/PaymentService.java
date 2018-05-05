@@ -6,7 +6,7 @@ import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
 import holiday.web.HolidayApplication;
 import holiday.web.entities.Payment;
-import holiday.web.utilities.PaymentResponse;
+import holiday.web.entities.PaymentResponse;
 import org.springframework.stereotype.Service;
 
 @Service

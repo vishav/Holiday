@@ -1,4 +1,4 @@
-package holiday.web.utilities;
+package holiday.web.entities;
 
 public class PaymentResponse {
 

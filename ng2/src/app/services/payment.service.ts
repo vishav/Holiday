@@ -23,7 +23,9 @@ export class PaymentService {
 
   createpayment(data) {
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + this.authservice.getToken()
     });
 
     const options = {headers};
