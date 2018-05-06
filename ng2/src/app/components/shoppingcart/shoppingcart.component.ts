@@ -49,7 +49,7 @@ export class ShoppingcartComponent implements OnInit {
   }
 
   removeallfromcart() {
-    this.cartservice.clearItems();
+    this.cartservice.clearItems().subscribe();
     this.cartitems = [];
     this.cartnumber = 0;
   }
