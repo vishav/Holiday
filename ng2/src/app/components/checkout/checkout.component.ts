@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { SearchQuery } from "../../models/SearchQuery";
-import { ShoppingcartService } from "../../services/shoppingcart.service";
-import { PaymentService } from "../../services/payment.service";
+import {Component, OnInit} from '@angular/core';
+import {SearchQuery} from "../../models/SearchQuery";
+import {ShoppingcartService} from "../../services/shoppingcart.service";
+import {PaymentService} from "../../services/payment.service";
 import {PricingService} from "../../services/pricing.service";
 
 @Component({
@@ -23,6 +23,8 @@ export class CheckoutComponent implements OnInit {
   paypalactive: boolean = false;
   creditactive: boolean = false;
   res: any;
+  invalidCVVCode = false;
+  invalidCreditCardNum = false;
 
   constructor(private cartservice: ShoppingcartService,
               private pricingservice: PricingService,
@@ -54,7 +56,7 @@ export class CheckoutComponent implements OnInit {
     for (var i = 0; i < this.cartitems.length; i++) {
       total += this.itemprice(this.cartitems[i]);
     }
-    return Math.round(total*100)/100;
+    return Math.round(total * 100) / 100;
   }
 
   daydiff(first, second) {
@@ -120,8 +122,60 @@ export class CheckoutComponent implements OnInit {
       return "diners";
   }
 
+  verifyCVVCodeLength(type, length) {
+    if (type == "amex") {
+      if (length != 4) {
+        return false;
+      } else {
+        return true
+      }
+    } else if (type == "mastercard" || type == "visa" || type == "diners" || type == "discover") {
+      if (length != 3) {
+        return false;
+      } else {
+        return true
+      }
+    }
+    return false;
+  }
+
+  validateCreditCard(value) {
+    // accept only digits, dashes or spaces
+    if (/[^0-9-\s]+/.test(value)) return false;
+
+    // The Luhn Algorithm. It's so pretty.
+    var nCheck = 0, nDigit = 0, bEven = false;
+    value = value.replace(/\D/g, "");
+
+    for (var n = value.length - 1; n >= 0; n--) {
+      var cDigit = value.charAt(n),
+        nDigit = parseInt(cDigit, 10);
+
+      if (bEven) {
+        if ((nDigit *= 2) > 9) nDigit -= 9;
+      }
+
+      nCheck += nDigit;
+      bEven = !bEven;
+    }
+
+    return (nCheck !== 0) && (nCheck % 10) == 0;
+  }
+
+
   pay() {
+
+    if(!this.validateCreditCard(this.cardnumber)){
+      this.invalidCreditCardNum = true;
+      return;
+    }
+
     var type = this.getType(this.cardnumber);
+    const cvvCodeLength = this.cvcode.toString().length;
+    this.invalidCVVCode = !this.verifyCVVCodeLength(type, cvvCodeLength);
+    if(this.invalidCVVCode){
+      return;
+    }
     console.log(type);
     if (this.creditactive) {
       var payment = {
