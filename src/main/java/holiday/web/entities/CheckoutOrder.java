@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement
@@ -128,8 +129,11 @@ public class CheckoutOrder extends ResourceSupport {
     }
 
     public String getRefundDate() {
-        return refundDate.format(formatter).toString();
-
+        if(refundDate==null){
+            return "";
+        }else {
+            return Optional.ofNullable(refundDate.format(formatter).toString()).orElse("");
+        }
     }
 
     public void setRefundDate(LocalDateTime refundDate) {
