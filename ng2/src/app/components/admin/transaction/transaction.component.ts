@@ -3,6 +3,7 @@ import {TransactionService} from '../../../services/transaction.service';
 import {AuthenticationService} from '../../../services/authentication.service';
 import { saveAs } from 'file-saver';
 import {TransactionResponse} from "../../../models/TransactionResponse";
+import {RefundResponse} from "../../../models/RefundResponse";
 
 @Component({
   selector: 'app-transaction',
@@ -26,8 +27,8 @@ export class TransactionComponent implements OnChanges {
   isloggedin: boolean;
   index: any = null;
   refundAmount: 0;
+  refundResponse: any = {};
   refundMessage = "";
-  refundError = false;
   refundSuccess = false;
   minimumrefundamountmessage = 'You can only refund amount greater than $.01 and  less than the total amount.';
 
@@ -73,6 +74,8 @@ export class TransactionComponent implements OnChanges {
   setindex(idx) {
     this.index = idx;
     this.resetMessages();
+    this.refundResponse.refundAmount = this.transactions[this.index].checkoutOrder.refundAmount;
+    this.refundResponse.refundDate = this.transactions[this.index].checkoutOrder.refundDate;
   }
 
   downloadTransactions() {
@@ -109,45 +112,50 @@ export class TransactionComponent implements OnChanges {
     console.log('file downloaded');
   }
 
-  refundTransaction(paymentid, total) {
-    let amount = total;
-    console.log('amount:', amount);
-    console.log('refundamount:', this.refundAmount);
-    if (this.refundAmount != null && this.refundAmount !== 0) {
-      amount = this.refundAmount;
-    }
+  refundTransaction(orderId, total) {
+    // const numbers = new RegExp(/^[0-9]+$/);
 
-    if (amount < 0 || amount > total) {
+    // let amount = total;
+    // console.log('amount:', amount);
+    console.log('refundamount:', this.refundAmount);
+    // if (this.refundAmount != null) {
+    //   amount = this.refundAmount;
+    // }
+
+    if(this.refundAmount == null || isNaN(parseFloat(this.refundAmount.toString())) || !isFinite(this.refundAmount)){
+      this.refundMessage = "Only numbers are allowed in the refund input box";
+      this.refundSuccess = false;
+    }else if (this.refundAmount <= 0 || this.refundAmount > total) {
       this.refundMessage = this.minimumrefundamountmessage;
-      this.refundError = true;
+      this.refundSuccess = false;
     } else {
       this.resetMessages();
       const data = {
-        'paymentid': paymentid,
-        'refundAmount': amount
+        'orderId': orderId,
+        'refundAmount': this.refundAmount
       };
-      console.log('refundamount:', amount);
-      this.transactionservice.refundTransaction(data).subscribe((result: TransactionResponse) => {
+      console.log('refundamount:', this.refundAmount);
+      this.transactionservice.refundTransaction(data).subscribe((result: RefundResponse) => {
           if (result.success) {
             this.refundMessage = 'Refund initiated successfully';
-            this.refundSuccess = true;
+            this.refundSuccess = result.success;
+            this.refundResponse = result;
           } else {
-            console.log(result.message);
-            this.refundMessage = result.message;
-            this.refundError = true;
+            console.log(result.refundMessage);
+            this.refundMessage = result.refundMessage;
+            this.refundSuccess = false;
           }
         },
         error => {
           console.log('Error while refunding transaction');
           this.refundMessage = 'Error while initiating refund. Please try again later.';
-          this.refundError = true;
+          this.refundSuccess = false;
         });
     }
   }
 
   resetMessages() {
     this.refundMessage = '';
-    this.refundError = false;
     this.refundSuccess = false;
   }
 }

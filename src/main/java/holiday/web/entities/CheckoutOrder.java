@@ -57,6 +57,11 @@ public class CheckoutOrder extends ResourceSupport {
 
     private String paymentId;
 
+    private double refundAmount;
+
+    @Convert(converter = LocalDateTimeConverter.class)
+    private LocalDateTime refundDate;
+
     public String getDateTime() {
         return dateTime.format(formatter).toString();
     }
@@ -112,5 +117,22 @@ public class CheckoutOrder extends ResourceSupport {
 
     public void setPaymentId(String paymentId) {
         this.paymentId = paymentId;
+    }
+
+    public double getRefundAmount() {
+        return refundAmount;
+    }
+
+    public void setRefundAmount(double refundAmount) {
+        this.refundAmount = refundAmount;
+    }
+
+    public String getRefundDate() {
+        return refundDate.format(formatter).toString();
+
+    }
+
+    public void setRefundDate(LocalDateTime refundDate) {
+        this.refundDate = refundDate;
     }
 }

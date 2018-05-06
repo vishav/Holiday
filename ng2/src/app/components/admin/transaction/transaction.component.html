@@ -78,7 +78,7 @@
             </tbody>
           </table>
           <div>
-            <div *ngIf="this.refundMessage && this.refundError; else refundsuccesscheck" class="alert alert-danger"
+            <div *ngIf="this.refundMessage && !this.refundSuccess; else refundsuccesscheck" class="alert alert-danger"
                  role="alert">
               {{refundMessage}}
             </div>
@@ -88,12 +88,11 @@
               </div>
             </ng-template>
             <button type="button" class="btn btn-info "
-                    (click)="refundTransaction(transactions[this.index].paymentid, transactions[this.index]?.total)">
+                    (click)="refundTransaction(transactions[this.index]?.checkoutOrder?.orderId, transactions[this.index]?.checkoutOrder?.total)">
               Refund transaction
             </button>
-            <input type="number" name="amount" [(ngModel)]="refundAmount" value={{transactions[this.index]?.total}}
-                   #amount="ngModel"/>
-            <div *ngIf="transactions[this.index]?.refunds?.length > 0">
+            <input type="number" name="amount" [(ngModel)]="refundAmount" #amount="ngModel"/>
+            <div *ngIf="this.refundResponse.refundAmount!=0">
               <h2 class="text-center">Refund Timeline</h2>
               <table class="table table-striped table-hover ">
                 <thead>
@@ -103,10 +102,10 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="warning" *ngFor="let item of transactions[this.index]?.refunds">
-                  <td *ngIf="item.date">{{item.date | date: 'yMd'}}</td>
-                  <td *ngIf="item.total">{{item.total | currency:'USD':true:'.2'}}</td>
-                </tr>
+                <!--<tr class="warning" *ngFor="let item of transactions[this.index]?.refunds">-->
+                  <td *ngIf="this.refundResponse.refundDate">{{this.refundResponse.refundDate}}</td>
+                  <td *ngIf="this.refundResponse.refundAmount">{{this.refundResponse.refundAmount | currency}}</td>
+                <!--</tr>-->
                 </tbody>
               </table>
             </div>

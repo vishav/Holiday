@@ -46,7 +46,7 @@ export class TransactionService {
     const options = {headers};
 
     return this.http.post('/refund', JSON.stringify({
-      paymentid: data.paymentid,
+      orderId: data.orderId,
       refundAmount: data.refundAmount
     }), options);
   }
