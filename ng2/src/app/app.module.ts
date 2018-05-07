@@ -38,6 +38,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TransactionComponent } from './components/admin/transaction/transaction.component';
 import { TransactionService } from './services/transaction.service';
 import {PricingService} from "./services/pricing.service";
+import {HashLocationStrategy, LocationStrategy} from "@angular/common";
 
 // Define the routes
 
@@ -82,7 +83,8 @@ import {PricingService} from "./services/pricing.service";
     UsersService,
     OrderService,
     TransactionService,
-    PricingService
+    PricingService,
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [AppComponent]
 })
