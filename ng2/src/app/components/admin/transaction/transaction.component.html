@@ -1,6 +1,6 @@
 <p *ngIf="!isloggedin; else authcheckblock ">{{notloggederrormessage}}</p>
 <ng-template #authcheckblock>
-  <p *ngIf="role!='ROLE_ADMIN'; else successBlock">{{unautherrormessage}}</p>
+  <p *ngIf="role.indexOf('ROLE_ADMIN')==-1; else successBlock">{{unautherrormessage}}</p>
 </ng-template>
 
 <ng-template #successBlock>

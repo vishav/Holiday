@@ -16,7 +16,7 @@ export class NavbarComponent implements OnInit {
   numitems= 0;
   route: string;
   selection: number;
-  role: string;
+  role: string[];
 
   constructor(private authenticationService: AuthenticationService,
               private router: Router,
@@ -46,7 +46,7 @@ export class NavbarComponent implements OnInit {
         this.role = this.currentUser.role;
         console.log("user role:" + this.currentUser.role);
       } else {
-        this.role = "customer";
+        this.role = ["customer"];
       }
     }
     //this.numitems = this.cartservice.getItemNum();

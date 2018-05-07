@@ -102,11 +102,15 @@ export class AuthenticationService {
         name: payload.fname,
         email: payload.email,
         userId: payload.userId,
-        role:"",
+        role:[],
         expiryDate: payload.expiryDate
       };
       if(payload.authorities){
-        user.role =  payload.authorities[0].name;
+        var roles=[];
+        for(let role of payload.authorities){
+          roles.push(role.name);
+        }
+        user.role =  roles;
       }
       return user;
     }
