@@ -26,7 +26,6 @@ export class ShoppingcartService {
         'Accept': 'application/json',
         'Authorization': 'Bearer ' + this.authenticationService.getToken(),
       });
-      // headers=headers.append('observe','response');
       let options = {headers};
 
       // first setting shopping cart variable locally
@@ -41,6 +40,7 @@ export class ShoppingcartService {
     } else {
       let savedShoppingCart = JSON.parse(localStorage.getItem('mea2necomm-shopping-cart'));
       if (savedShoppingCart) {
+        console.log("getting shopping cart from local storage");
         this.shoppingCart = savedShoppingCart;
       } else {
         this.shoppingCart = [];
@@ -68,7 +68,7 @@ export class ShoppingcartService {
 
   addItems(cartItems: SearchQuery[]) {
     this.shoppingCart = this.shoppingCart.concat(cartItems);
-    this.updateStorage();
+    this.updateStorage().subscribe();
   }
 
   clearItems(): Observable<SearchQuery[]> {
@@ -155,8 +155,6 @@ export class ShoppingcartService {
       console.log("setting logged in users cart");
       var user = this.authenticationService.currentUser();
       // add to server
-      //console.log(user);
-      //console.log(JSON.stringify({ useremail: user.email, cartItems: this.shoppingCart }));
 
       const headers = new HttpHeaders({
         'Accept': 'application/json',
@@ -164,10 +162,8 @@ export class ShoppingcartService {
         'Authorization': 'Bearer ' + this.authenticationService.getToken(),
         'user_id': user.userId.toString(),
       });
-      // headers=headers.append('observe', 'response');
 
       let options = {headers};
-      //console.log(headers);
 
       console.log("saving shopping cart");
       return this.http.post<SearchQuery[]>('/saveShoppingCart', JSON.stringify(this.shoppingCart
