@@ -1,11 +1,9 @@
 package holiday.web.controllers;
 
+import holiday.web.entities.ResetPassword;
 import holiday.web.entities.UserAccount;
 import holiday.web.services.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,14 +52,18 @@ public class UserAccountController {
     @RequestMapping(method = RequestMethod.POST,value = "/register")
     public UserAccount RegisterUser(@RequestBody UserAccount userAccount)
     {
+        UserAccount authenticatedUserAccount = userAccountService.loadUserByUsername(userAccount.getEmail());
+        if (authenticatedUserAccount != null){
+            return null;
+        }
         return userAccountService.saveUser(userAccount);
     }
 
-    @RequestMapping(method = RequestMethod.POST,value = "/forgot")
-    public void forgotUser(HttpServletRequest request, @RequestBody UserAccount userAccount)
+    @RequestMapping(method = RequestMethod.POST,value = "/changePassword")
+    public ResetPassword changePassword(HttpServletRequest request, @RequestBody ResetPassword resetPassword)
     {
-         userAccountService.resetPassword(request.getContextPath(),
-                 request.getLocale(),userAccount);
+        userAccountService.updatePassword(resetPassword);
+        return resetPassword;
     }
 
 //    @RequestMapping(method = RequestMethod.GET, value = "/resetPasswordPage")
@@ -74,9 +76,18 @@ public class UserAccountController {
 //    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/resetPassword")
-    public UserAccount resetPassword(@RequestParam("id") long id, @RequestParam("token") String token, @RequestBody UserAccount userToUpdate)
+    public ResetPassword resetPassword(HttpServletRequest request, @RequestBody UserAccount userToUpdate)
     {
-        return userAccountService.updatePassword(id, token,userToUpdate);
+/*        if(userAccountService.verifyUserHasRequiredRole(userToUpdate.getUserId(), "ROLE_ADMIN") == null){
+            ResetPasswordResponse response = new ResetPasswordResponse();
+            response.setMessage("Invalid Request");
+            response.setSuccess(false);
+            return response;
+        }*/
+        String url= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+        ResetPassword response = userAccountService.resetPassword(userToUpdate, new StringBuilder(url));
+
+        return response;
     }
 
     @RequestMapping(method = RequestMethod.PUT,value = "/users")
@@ -89,5 +100,16 @@ public class UserAccountController {
     public void deleteUser(UserAccount userAccount)
     {
         userAccountService.deleteUser(userAccount);
+    }
+
+    @RequestMapping("/uuiduser/{uuid}")
+    public UserAccount getUserByUUID(@PathVariable String uuid)
+    {
+        UserAccount user = userAccountService.getUserByUUID(uuid);
+        if(user==null){
+            return null;
+        }
+        user.setPassword(null);
+        return user;
     }
 }

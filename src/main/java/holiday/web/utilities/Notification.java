@@ -1,23 +1,38 @@
 package holiday.web.utilities;
 
-import holiday.web.entities.UserAccount;
-
-import javax.mail.*;
+import java.util.Properties;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.Properties;
+
+import holiday.web.entities.UserAccount;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+
 
 /**
  * Created by karthik on 2/5/2017.
  */
+
+
 public class Notification {
 
-    String holidayServer = "do.not.reply.holiday@gmail.com";
-    String holidayPass = "Password@1";
+    String holidayServer = "mea2nmailer@gmail.com";
+    String holidayPass = "starfishwhite";
 
     String subject;
     String body;
     UserAccount userAccount;
+
+    @Autowired
+    private Environment env;
+
     public Notification(UserAccount userAccount, String message)  {
         body = message;
         subject = "Request For Password Reset Holidays App";
@@ -33,6 +48,8 @@ public class Notification {
     }
 
     public void sendEmailMessage() throws MessagingException {
+
+        System.out.println("username:"+holidayServer);
 
         // Get system properties
         Properties props ;//= System.getProperties();

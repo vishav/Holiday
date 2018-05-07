@@ -2,6 +2,7 @@ package holiday.web.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import holiday.web.utilities.LocalDateTimeConverter;
 import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.*;
@@ -66,6 +67,11 @@ public class UserAccount extends ResourceSupport{
 
 	@Transient
 	private long expiryDate;
+
+	private String resetUuid;
+
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime resetDate;
 
 	public Long getUserId() {
 		return userId;
@@ -161,5 +167,21 @@ public class UserAccount extends ResourceSupport{
 
 	public void setExpiryDate(long expiryDate) {
 		this.expiryDate = expiryDate;
+	}
+
+	public String getResetUuid() {
+		return resetUuid;
+	}
+
+	public void setResetUuid(String resetUuid) {
+		this.resetUuid = resetUuid;
+	}
+
+	public LocalDateTime getResetDate() {
+		return resetDate;
+	}
+
+	public void setResetDate(LocalDateTime resetDate) {
+		this.resetDate = resetDate;
 	}
 }

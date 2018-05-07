@@ -1,14 +1,14 @@
 package holiday.web.services;
 
-import holiday.web.entities.PasswordResetToken;
-import holiday.web.entities.Role;
-import holiday.web.entities.TransactionResponse;
-import holiday.web.entities.UserAccount;
+import javax.mail.MessagingException;
+
+import holiday.web.entities.*;
 import holiday.web.repositories.PasswordTokenRepository;
 import holiday.web.repositories.RoleRepository;
 import holiday.web.repositories.UserAccountRepository;
 import holiday.web.utilities.CustomUserDetails;
 import holiday.web.utilities.Notification;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,8 +19,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -77,6 +79,7 @@ public class UserAccountService implements UserDetailsService {
 /*                authenticatedUserAccount.add(linkTo(methodOn(UserAccountController.class).getUser(id)).withSelfRel());
                 authenticatedUserAccount.add(linkTo(methodOn(OrderController.class).getAllOrders(id)).withRel("checkouts"));*/
         } else {
+            System.out.println("password not matched:"+user.getEmail());
             return null;
         }
         authenticatedUserAccount.setPassword(null);
@@ -115,32 +118,57 @@ public class UserAccountService implements UserDetailsService {
         userAccountRepository.delete(userAccount.getUserId());
     }
 
-    public void resetPassword(String contextPath, Locale locale, UserAccount userAccount) {
-        UserAccount u = userAccountRepository.findByEmail(userAccount.getEmail());
-        if (u == null) {
-            return;
+    public ResetPassword resetPassword(UserAccount userAccount, StringBuilder url) {
+        ResetPassword response = new ResetPassword();
+        UserAccount user = userAccountRepository.findByEmail(userAccount.getEmail());
+        if (user == null) {
+            System.out.println("user not found:"+ user.getEmail());
+            response.setMessage("Invalid Request");
+            response.setSuccess(false);
+            return response;
         }
-        String token = UUID.randomUUID().toString();
-        createPasswordResetTokenForUser(u, token);
-
-        String url="";
-//        String url = linkTo(methodOn(UserAccountController.class).resetPassword(u.getUserId(), token, u)).toString().replace("resetPassword", "changePassword.html");
-        String message = "Click the link to Reset Password";
-
-        String body = message + " \r\n" + url;
-        Notification notification = new Notification(u, body);
+        String token = null;
         try {
-            notification.sendEmailMessage();
-        } catch (MessagingException e) {
+            token = URLEncoder.encode(UUID.randomUUID().toString(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
+        url.append("/#/").append("changepassword/").append(token);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
+        LocalDateTime currentDate = LocalDateTime.now();
+
+        // save the token and the rest date
+        user.setResetUuid(token);
+        user.setResetDate(currentDate);
+//        createPasswordResetTokenForUser(user, token);
+
+//        String url = linkTo(methodOn(UserAccountController.class).resetPassword(user.getUserId(), token, u)).toString().replace("resetPassword", "changePassword.html");
+        String message = "Click the link to Reset Password";
+
+        String body = message + " \r\n" + url.toString();
+        Notification notification = new Notification(user, body);
+        try {
+            notification.sendEmailMessage();
+        } catch (MessagingException e) {
+            response.setMessage("Unable to send reset email");
+            response.setSuccess(false);
+            e.printStackTrace();
+            return response;
+        }
+
+        userAccountRepository.save(user);
+
+        response.setMessage("Reset password email sent to user");
+        response.setSuccess(true);
+        return response;
+
     }
 
-    public void createPasswordResetTokenForUser(UserAccount user, String token) {
+/*    public void createPasswordResetTokenForUser(UserAccount user, String token) {
         PasswordResetToken myToken = new PasswordResetToken(token, user);
         passwordTokenRepository.save(myToken);
-    }
+    }*/
 
     public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserAccount authenticatedUserAccount = null;
@@ -151,28 +179,29 @@ public class UserAccountService implements UserDetailsService {
         return new CustomUserDetails(authenticatedUserAccount);
     }
 
-    public UserAccount updatePassword(long id, String token, UserAccount userToUpdate) {
+    public void updatePassword(ResetPassword resetPassword) {
 
-        String result = validatePasswordResetToken(id, token);
-        if (result != null) {
-            return null;
-        }
         //update password
-        UserAccount u = null;
-        u = userAccountRepository.findByEmail(userToUpdate.getEmail());
-        if (u != null) {
-            if (u.getUserId() != id) return null;
-            if (userToUpdate.getPassword() == null) return null;
-            u.setPassword(encoder.encode(userToUpdate.getPassword()));
+        UserAccount user = getUserByUUID(resetPassword.getRequesteduuid());
+        if (user != null) {
+            if(matchEncodedStrings(resetPassword.getPassword(), user.getPassword())){
+                resetPassword.setMessage("New password can't be same as the current/old password");
+                resetPassword.setSuccess(false);
+                return;
+            }
+            user.setPassword(encoder.encode(resetPassword.getPassword()));
+            user.setResetDate(LocalDateTime.now());
+            user.setResetUuid(null);
+            user = userAccountRepository.save(user);
+            resetPassword.setMessage("Password changed successfully. Please login using the new password");
+            resetPassword.setSuccess(true);
+        }else{
+            resetPassword.setMessage("Invalid request");
+            resetPassword.setSuccess(false);
         }
 
-        u = userAccountRepository.save(u);
-//        u.add(linkTo(methodOn(UserAccountController.class).getUser(u.getUserId())).withSelfRel());
-//        u.add(linkTo(methodOn(UserAccountController.class).AuthenticateUser(u)).withRel("auth"));
-//        u.add(linkTo(methodOn(UserAccountController.class).updateUser(u)).withRel("update"));
-        u.setPassword(null);
-        return u;
-
+        resetPassword.setPassword(null);
+        resetPassword.setRequesteduuid(null);
     }
 
     public String validatePasswordResetToken(long id, String token) {
@@ -203,5 +232,24 @@ public class UserAccountService implements UserDetailsService {
         List<TransactionResponse> transactionResponse = userAccountRepository.findTransactions(email, fname, lname, country, state, city, fromDate, toDate);
 
         return transactionResponse;
+    }
+
+    public UserAccount getUserByUUID(String uuid) {
+        UserAccount user = userAccountRepository.findByResetUuid(uuid);
+        return user;
+    }
+
+    public UserAccount verifyUserHasRequiredRole(Long userId, String requiredRole){
+
+        if(userId == null){
+            return null;
+        }
+        UserAccount user  = userAccountRepository.findOne(userId);
+        if(user != null && user.getRoles().stream().anyMatch(roles -> roles.getName().equalsIgnoreCase(requiredRole))){
+            return user;
+        }
+        System.out.println("user doesn't has required role:"+ requiredRole);
+        user.getRoles().forEach(System.out::println);
+        return null;
     }
 }

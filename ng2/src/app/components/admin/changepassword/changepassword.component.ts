@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UsersService } from "../../../services/users.service";
+import {ResetPassword} from "../../../models/ResetPassword";
 
 @Component({
   selector: 'app-changepassword',
@@ -11,7 +12,8 @@ export class ChangepasswordComponent implements OnInit {
 
   private requesteduuid: string = null;
   private user: any = null;
-  private updateresult: string = "";
+  private resetPasswordResponse: ResetPassword = null;
+
 
   constructor(private userservice: UsersService,
               private activatedRoute: ActivatedRoute) {
@@ -38,14 +40,9 @@ export class ChangepasswordComponent implements OnInit {
   }
 
   resetpassword(pass) {
-    this.userservice.updatePassword(this.requesteduuid, pass).subscribe(result => {
-      if (result) {
-        console.log(result);
-        this.updateresult = "Successfully changed password";
-      } else {
-        console.log("Error while changing password");
-        this.updateresult = "Unsuccessful";
-      }
+    this.userservice.updatePassword(this.requesteduuid, pass).subscribe((response:ResetPassword) => {
+      console.log(response.message);
+      this.resetPasswordResponse = response;
     });
   }
 

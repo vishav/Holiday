@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersService } from "../../../services/users.service";
+import {ResetPassword} from "../../../models/ResetPassword";
 //const uuidv1 = require('uuid/v1');
 //import * as uuidv1 from 'uuid/v1.js';
 
@@ -13,6 +14,7 @@ import { UsersService } from "../../../services/users.service";
 export class ResetpasswordComponent implements OnInit {
   private users: any = null;
   private modalmessage: string = "";
+  private resetPasswordResponse: ResetPassword = null;
 
   constructor(private userservice: UsersService) {
   }
@@ -34,15 +36,14 @@ export class ResetpasswordComponent implements OnInit {
     //console.log(uuidv1());
     console.log(window.location.origin);
 
-    this.userservice.resetPassword(user.email).subscribe(info => {
-      if (info) {
-        console.log(info);
-        this.modalmessage = "Reset email sent to user";
-
-      } else {
-        console.log("Unable to send reset email");
-        this.modalmessage = "Unable to send reset email";
-      }
+    this.userservice.resetPassword(user.email).subscribe((response: ResetPassword) => {
+/*      if (response && response.success) {
+        console.log(response.message);
+        this.resetPasswordResponse = response;
+      } else {*/
+        console.log(response.message);
+        this.resetPasswordResponse = response;
+      // }
     });
 
 

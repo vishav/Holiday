@@ -25,6 +25,8 @@ public interface UserAccountRepository extends CrudRepository<UserAccount, Long>
     // @PostAuthorize("returnObject.firstName == principal.username or hasRole('ROLE_ADMIN')")
     UserAccount findOne(Long id);
 
+    UserAccount findByResetUuid(String id);
+
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
 //    List<UserAccount> findByFirstNameLike(@Param("firstName") String firstName);
 
