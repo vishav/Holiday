@@ -1,6 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-
-import {PaymentService} from '../../services/payment.service';
 import {Pricing} from '../../models/Pricing';
 import {AuthenticationService} from '../../services/authentication.service';
 import {PricingService} from "../../services/pricing.service";
@@ -13,7 +11,7 @@ import {PricingService} from "../../services/pricing.service";
 export class PricingComponent implements OnInit {
   pricing: any;
   errorMessage: string;
-  role: string;
+  role: string[] = null;
   isloggedin: boolean;
   currentUser: any;
   loading = false;
@@ -30,12 +28,12 @@ export class PricingComponent implements OnInit {
         if (this.currentUser != null) {
           this.role = this.currentUser.role;
         } else {
-          this.role = 'customer';
+          this.role = ['customer'];
         }
       }
     }
 
-    this.pricingservice.getPricing().subscribe(pricing => {
+    this.pricingservice.getPricing().subscribe((pricing:Pricing) => {
         console.log(pricing);
         this.pricing = pricing;
       },

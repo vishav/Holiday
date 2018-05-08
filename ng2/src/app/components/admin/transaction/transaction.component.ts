@@ -1,8 +1,7 @@
 import {Component, Input, OnChanges} from '@angular/core';
 import {TransactionService} from '../../../services/transaction.service';
 import {AuthenticationService} from '../../../services/authentication.service';
-import { saveAs } from 'file-saver';
-import {TransactionResponse} from "../../../models/TransactionResponse";
+import {saveAs} from 'file-saver';
 import {RefundResponse} from "../../../models/RefundResponse";
 
 @Component({
@@ -19,7 +18,7 @@ export class TransactionComponent implements OnChanges {
   @Input() model: any = {};
   errorMessage: string;
   transactions: any = [];
-  role: string;
+  role: string[] = null;
   currentUser: any;
   notloggederrormessage = 'To view this page, you must login first.';
   unautherrormessage = 'You are not authorized to view this page';
@@ -42,7 +41,7 @@ export class TransactionComponent implements OnChanges {
         if (this.currentUser != null) {
           this.role = this.currentUser.role;
         } else {
-          this.role = 'customer';
+          this.role = ['customer'];
         }
       }
     }
@@ -113,14 +112,8 @@ export class TransactionComponent implements OnChanges {
   }
 
   refundTransaction(orderId, total) {
-    // const numbers = new RegExp(/^[0-9]+$/);
 
-    // let amount = total;
-    // console.log('amount:', amount);
     console.log('refundamount:', this.refundAmount);
-    // if (this.refundAmount != null) {
-    //   amount = this.refundAmount;
-    // }
 
     if(this.refundAmount == null || isNaN(parseFloat(this.refundAmount.toString())) || !isFinite(this.refundAmount)){
       this.refundMessage = "Only numbers are allowed in the refund input box";
@@ -137,7 +130,7 @@ export class TransactionComponent implements OnChanges {
       console.log('refundamount:', this.refundAmount);
       this.transactionservice.refundTransaction(data).subscribe((result: RefundResponse) => {
           if (result.success) {
-            this.refundMessage = 'Refund initiated successfully';
+            this.refundMessage = result.refundMessage;
             this.refundSuccess = result.success;
             this.refundResponse = result;
           } else {

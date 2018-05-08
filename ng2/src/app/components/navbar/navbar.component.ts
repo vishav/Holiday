@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
-import { AuthenticationService } from '../../services/authentication.service';
-import { ShoppingcartService } from '../../services/shoppingcart.service'
-import { Router, ActivatedRoute } from '@angular/router';
+import {Component, Input, OnInit} from '@angular/core';
+import {AuthenticationService} from '../../services/authentication.service';
+import {ShoppingcartService} from '../../services/shoppingcart.service'
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -16,7 +16,7 @@ export class NavbarComponent implements OnInit {
   numitems= 0;
   route: string;
   selection: number;
-  role: string[];
+  role: string[] = null;
 
   constructor(private authenticationService: AuthenticationService,
               private router: Router,
@@ -49,8 +49,6 @@ export class NavbarComponent implements OnInit {
         this.role = ["customer"];
       }
     }
-    //this.numitems = this.cartservice.getItemNum();
-
     this.cartservice.getShoppingCart().subscribe(cartItems => {
       if(cartItems) {
         this.numitems = cartItems.length;

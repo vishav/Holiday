@@ -54,7 +54,7 @@ export class DashboardComponent implements OnInit {
   fromDate: any = null;
   toDate: any = null;
   submitenabled = false;
-  role: string;
+  role: string[] = null
   currentUser: any;
   notloggederrormessage = 'To view this page, you must login first.';
   unautherrormessage = 'You are not authorized to view this page.';
@@ -80,7 +80,7 @@ export class DashboardComponent implements OnInit {
         if (this.currentUser != null) {
           this.role = this.currentUser.role;
         } else {
-          this.role = 'customer';
+          this.role = ['customer'];
         }
       }
     }
@@ -101,9 +101,6 @@ export class DashboardComponent implements OnInit {
       this.countries = countries;
     });
     this.currentyear = (new Date()).getFullYear();
-    // this.hselectionService.getYear().subscribe(year => {
-    //   // this.currentyear = year.year;
-    // });
   }
 
   countrySelect(country) {
@@ -197,8 +194,5 @@ export class DashboardComponent implements OnInit {
     }else{
       this.tempmodel.useremail = "000000";
     }
-
-/*    this.fromDate = null;
-    this.toDate = null;*/
   }
 }
