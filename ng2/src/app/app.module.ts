@@ -69,7 +69,6 @@ import {HashLocationStrategy, LocationStrategy} from "@angular/common";
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule,
     HttpClientModule,
     MyDatePickerModule,
     RouterModule.forRoot(routes) // Add routes to the app

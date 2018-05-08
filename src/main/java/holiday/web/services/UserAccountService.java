@@ -1,31 +1,30 @@
 package holiday.web.services;
 
-import javax.mail.MessagingException;
-
-import holiday.web.entities.*;
+import holiday.web.entities.ResetPassword;
+import holiday.web.entities.Role;
+import holiday.web.entities.TransactionResponse;
+import holiday.web.entities.UserAccount;
 import holiday.web.repositories.RoleRepository;
 import holiday.web.repositories.UserAccountRepository;
 import holiday.web.utilities.CustomUserDetails;
 import holiday.web.utilities.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-//import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
 
 /**
  * Created by karthik on 1/22/2017.

@@ -20,9 +20,6 @@ public class CustomUserDetails extends UserAccount implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return userAccount.getRoles();
-//       return roles.stream()
-//               .map(r -> new SimpleGrantedAuthority(r.getName()))
-//               .collect(Collectors.toList());
     }
 
     @Override

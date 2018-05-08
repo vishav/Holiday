@@ -38,7 +38,7 @@ public class TransactionController {
     }
 
 
-    public List<TransactionResponse> getAllTransactions(String country, String state, String city, String fname, String lname, String useremail, String fromDate, String toDate) {
+    private List<TransactionResponse> getAllTransactions(String country, String state, String city, String fname, String lname, String useremail, String fromDate, String toDate) {
         country = convertToNullIfEmpty(country, "Country");
         state = convertToNullIfEmpty(state, "State");
         city = convertToNullIfEmpty(city, "City");
