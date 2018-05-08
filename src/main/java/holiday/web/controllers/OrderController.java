@@ -31,12 +31,6 @@ public class OrderController {
         return orderService.getAllOrders(userId);
     }
 
-/*    @RequestMapping("/orders/{id}")
-    public CheckoutOrder getOrder(@PathVariable Long id)
-    {
-        return orderService.getOrder(id);
-    }*/
-
     @RequestMapping(method = RequestMethod.POST,value = "/orders")
     public CheckoutOrder addOrder(@RequestBody CheckoutOrder checkoutOrderTemp, @RequestHeader("userId") String userId)
     {
@@ -52,22 +46,10 @@ public class OrderController {
         checkoutOrder.setPaymentId(checkoutOrderTemp.getPaymentId());
         CheckoutOrder savedCheckoutOrder = orderService.saveOrder(checkoutOrder);
         savedCheckoutOrder.setItem(items);
-        items.stream().forEach(c -> {
-            c.setCheckoutOrder(savedCheckoutOrder);
-            itemService.saveItem(c);
+        items.stream().forEach(item -> {
+            item.setCheckoutOrder(savedCheckoutOrder);
+            itemService.saveItem(item);
         });
         return savedCheckoutOrder;
-    }
-
-    @RequestMapping(method = RequestMethod.PUT,value = "/orders")
-    public CheckoutOrder updateOrder(@RequestBody CheckoutOrder checkoutOrder)
-    {
-        return orderService.saveOrder(checkoutOrder);
-    }
-
-    @RequestMapping(method = RequestMethod.DELETE,value = "/orders")
-    public void deleteOrder(CheckoutOrder checkoutOrder)
-    {
-        orderService.deleteOrder(checkoutOrder);
     }
 }

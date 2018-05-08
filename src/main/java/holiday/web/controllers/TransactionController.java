@@ -1,8 +1,6 @@
 package holiday.web.controllers;
 
 import holiday.web.entities.TransactionResponse;
-import holiday.web.entities.UserAccount;
-import holiday.web.services.ItemService;
 import holiday.web.services.UserAccountService;
 import holiday.web.utilities.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +17,6 @@ import java.util.List;
 
 @RestController
 public class TransactionController {
-
-    @Autowired
-    private ItemService itemService;
 
     @Autowired
     private UserAccountService userAccountService;
@@ -76,7 +71,6 @@ public class TransactionController {
     private String convertToNullIfEmpty(String parameter, String textToClean) {
 
         parameter = parameter.equals(textToClean) ? null : parameter;
-        System.out.println("parameter:"+parameter);
         return parameter;
     }
 }

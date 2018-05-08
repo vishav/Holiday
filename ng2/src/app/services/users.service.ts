@@ -35,12 +35,6 @@ export class UsersService {
 
   resetPassword(useremail) {
 
-    //if(this.authservice.isLoggedIn()){
-
-    /*    let headers = new Headers({'Content-Type': 'application/json', 'Accept': 'application/json'});
-        //headers.append('Authorization', 'Bearer '+ this.authservice.getToken());
-        let options = new RequestOptions({headers: headers});*/
-
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json'
@@ -51,7 +45,6 @@ export class UsersService {
     // returning observable to calling component
 
     return this.http.post('/resetPassword', JSON.stringify({
-      // userId: this.authservice.currentUser().userId,
       email: useremail
     }), options);
   }
@@ -59,8 +52,6 @@ export class UsersService {
   getUserByUUID(uuid) {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      // 'Content-Type': 'application/json'
-      // 'Authorization': 'Bearer ' + this.authservice.getToken()
     });
 
     const options = {headers};

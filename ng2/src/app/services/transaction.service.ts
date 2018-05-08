@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {AuthenticationService} from './authentication.service';
 import 'rxjs/add/operator/map';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ResponseContentType} from "@angular/http";
 
 @Injectable()
 export class TransactionService {

@@ -1,6 +1,5 @@
 package holiday.web.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import holiday.web.utilities.LocalDateTimeConverter;
 import org.springframework.hateoas.ResourceSupport;
@@ -25,10 +24,8 @@ public class UserAccount extends ResourceSupport{
 	public UserAccount(UserAccount user)
 	{
 		this.setUserId(user.getUserId());
-//		this.setUserName(user.getUserName());
 		this.setEmail(user.getEmail());
 		this.setPassword(user.getPassword());
-//		this.setContactNo(user.getContactNo());
 	}
 	
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,21 +40,15 @@ public class UserAccount extends ResourceSupport{
     @Transient
     private boolean isAuthenticated ;
 
-//    private String userName;
-
 	@Column(length = 100)
 	private String password; // encrypt and use ssl
  
     private String email;
-    
-//    private String contactNo;
 
     private String fname;
 
     private String lname;
 
-//    @JsonIgnore
-//	@JsonBackReference
     @OneToMany(mappedBy="userAccount")
     private List<CheckoutOrder> checkoutOrder = new ArrayList<CheckoutOrder>();
 
@@ -81,14 +72,6 @@ public class UserAccount extends ResourceSupport{
 		this.userId = userId;
 	}
 
-//	public String getUserName() {
-//		return userName;
-//	}
-//
-//	public void setUserName(String userName) {
-//		this.userName = userName;
-//	}
-
 	public String getEmail() {
 		return email;
 	}
@@ -96,14 +79,6 @@ public class UserAccount extends ResourceSupport{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-//	public String getContactNo() {
-//		return contactNo;
-//	}
-//
-//	public void setContactNo(String contactNo) {
-//		this.contactNo = contactNo;
-//	}
 
 	public String getPassword() {
 		return password;

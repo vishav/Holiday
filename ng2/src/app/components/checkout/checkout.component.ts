@@ -12,17 +12,14 @@ import {PricingService} from "../../services/pricing.service";
 export class CheckoutComponent implements OnInit {
   cartitems: SearchQuery[];
   total: number;
-  //price: number;
   pricing: any = null;
   firstname: string;
   lastname: string;
   expirydate: string;
   cardnumber: number;
-  paymentmethod: string;
   cvcode: number;
   paypalactive: boolean = false;
   creditactive: boolean = false;
-  res: any;
   invalidCVVCode = false;
   invalidCreditCardNum = false;
 
@@ -32,8 +29,8 @@ export class CheckoutComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.price = this.cartservice.getPricePerYear();
     this.cartservice.getShoppingCart().subscribe(cartitems => {
+      console.log("returned shopping cart from local storage");
       this.cartitems = cartitems;
       this.total = this.totalprice();
       console.log(this.total);
@@ -46,9 +43,6 @@ export class CheckoutComponent implements OnInit {
       console.log("the pricing object:");
       console.log(pricing);
     });
-    //if user is logged in fetch from a different method
-
-
   }
 
   totalprice() {
@@ -82,7 +76,6 @@ export class CheckoutComponent implements OnInit {
       return (totalprice);
     else
       return (this.pricing.minPrice);
-
   }
 
   paymethod(type) {

@@ -42,11 +42,6 @@ public class Item extends ResourceSupport {
   
     private Double price;
 
-//	@JsonIgnore
-//    @Transient
-//    public int checkout_id ;
-
-
 	@JsonIgnore
     @ManyToOne
     @JoinColumn(name="order_id",foreignKey = @ForeignKey(name = "ITEM_ORDER"))
@@ -56,14 +51,6 @@ public class Item extends ResourceSupport {
 	@ManyToOne
 	@JoinColumn(name="shopping_cart_id",foreignKey = @ForeignKey(name = "ITEM_SHOPPING_CART"))
 	public ShoppingCart shoppingCart;
-
-
-//	public int getCheckoutId()
-//	{
-//		checkout_id = checkoutOrder.getId();
-//		return checkout_id;
-//	}
-
 
 	public Long getItemID() {
 		return itemID;

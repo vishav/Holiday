@@ -43,8 +43,4 @@ export class HselectionService {
     console.log(data);
     return this.http.get('/getFreeHolidays/' + data.country + '/' + data.state + '/' + data.city + '/' + data.fromYear + '/' + data.fromMonth + '/' + data.fromDay + '/' + data.toYear + '/' + data.toMonth + '/' + data.toDay);
   }
-
-  // getYear() {
-  //   return this.http.get(GlobalConstants.baseURL);
-  // }
 }

@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersService } from "../../../services/users.service";
 import {ResetPassword} from "../../../models/ResetPassword";
-//const uuidv1 = require('uuid/v1');
-//import * as uuidv1 from 'uuid/v1.js';
-
-//import * as nodemailer from 'nodemailer';
 
 @Component({
   selector: 'app-resetpassword',
@@ -33,20 +29,11 @@ export class ResetpasswordComponent implements OnInit {
 
   resetpwd(user) {
     console.log(user);
-    //console.log(uuidv1());
     console.log(window.location.origin);
 
     this.userservice.resetPassword(user.email).subscribe((response: ResetPassword) => {
-/*      if (response && response.success) {
         console.log(response.message);
         this.resetPasswordResponse = response;
-      } else {*/
-        console.log(response.message);
-        this.resetPasswordResponse = response;
-      // }
     });
-
-
   }
-
 }

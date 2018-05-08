@@ -1,8 +1,8 @@
-import {Component, OnInit, Input} from '@angular/core';
-import { HselectionService } from '../../services/hselection.service'
-import { ShoppingcartService } from '../../services/shoppingcart.service'
-import { Router } from '@angular/router'
-import {IMyDpOptions, IMyDateModel} from 'mydatepicker';
+import {Component, Input, OnInit} from '@angular/core';
+import {HselectionService} from '../../services/hselection.service'
+import {ShoppingcartService} from '../../services/shoppingcart.service'
+import {Router} from '@angular/router'
+import {IMyDateModel, IMyDpOptions} from 'mydatepicker';
 
 @Component({
   moduleId: module.id,
@@ -74,9 +74,6 @@ export class HselectionComponent implements OnInit {
       this.countries = countries;
     });
     this.currentyear = (new Date()).getFullYear();
-    // this.hselectionService.getYear().subscribe( year => {
-    //   this.currentyear = year.year;
-    // });
   }
 
   countrySelect(country){
@@ -218,12 +215,5 @@ export class HselectionComponent implements OnInit {
       this.cartnumber = cartItems.length;
       console.log('cartnumber' + this.cartnumber);
     });
-
-    // this.cartservice.getShoppingCart().subscribe(cartItems =>
-    // {
-    //   this.cartnumber = cartItems.length;
-    //   console.log('cartnumber' + this.cartnumber);
-    // });
-
   }
 }

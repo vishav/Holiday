@@ -1,11 +1,10 @@
 package holiday.web.controllers;
 
-import holiday.web.entities.*;
-import holiday.web.services.ItemService;
+import holiday.web.entities.Item;
+import holiday.web.entities.ShoppingCart;
+import holiday.web.entities.UserAccount;
 import holiday.web.services.ShoppingCartService;
-import holiday.web.services.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -16,9 +15,6 @@ public class ShoppingCartController {
 
     @Autowired
     private ShoppingCartService shoppingCartService;
-
-    @Autowired
-    private ItemService itemService;
 
     @RequestMapping(method = RequestMethod.GET, value = "/getShoppingCart/{userId}")
     public List<Item> getShoppingCart(@PathVariable Long userId) {
@@ -61,15 +57,9 @@ public class ShoppingCartController {
 
         items.stream().forEach(c -> {
             c.setShoppingCart(temp_ShoppingCart);
-//            itemService.saveItem(c);
         });
         ShoppingCart savedShoppingCart = shoppingCartService.saveShoppingCart(temp_ShoppingCart);
-//        savedShoppingCart.setItem(items);
 
-//        items.stream().forEach(c -> {
-//            c.setShoppingCart(savedShoppingCart);
-//            itemService.saveItem(c);
-//        });
         return temp_ShoppingCart.getItem();
     }
 }

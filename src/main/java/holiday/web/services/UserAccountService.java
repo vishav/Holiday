@@ -3,12 +3,10 @@ package holiday.web.services;
 import javax.mail.MessagingException;
 
 import holiday.web.entities.*;
-import holiday.web.repositories.PasswordTokenRepository;
 import holiday.web.repositories.RoleRepository;
 import holiday.web.repositories.UserAccountRepository;
 import holiday.web.utilities.CustomUserDetails;
 import holiday.web.utilities.Notification;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,9 +35,6 @@ import java.util.stream.StreamSupport;
 public class UserAccountService implements UserDetailsService {
 
     @Autowired
-    private PasswordTokenRepository passwordTokenRepository;
-
-    @Autowired
     private UserAccountRepository userAccountRepository;
 
     @Autowired
@@ -52,7 +47,6 @@ public class UserAccountService implements UserDetailsService {
         return StreamSupport.stream(userAccountRepository.findAll().spliterator(), false)
                 .map(u -> {
                     u.setPassword(null);
-//                    u.add(linkTo(methodOn(UserAccountController.class).getUser(u.getUserId())).withSelfRel());
                     return u;
                 })
                 .collect(Collectors.toList());
@@ -62,9 +56,6 @@ public class UserAccountService implements UserDetailsService {
     public UserAccount getUser(Long id) {
         UserAccount u = userAccountRepository.findOne(id);
         u.setPassword(null);
-//        u.add(linkTo(methodOn(UserAccountController.class).getUser(u.getUserId())).withSelfRel());
-//        u.add(linkTo(methodOn(UserAccountController.class).AuthenticateUser(u)).withRel("auth"));
-//        u.add(linkTo(methodOn(UserAccountController.class).updateUser(u)).withRel("update"));
         return u;
     }
 
@@ -75,9 +66,6 @@ public class UserAccountService implements UserDetailsService {
         if (authenticatedUserAccount != null && matchEncodedStrings(user.getPassword(), authenticatedUserAccount.getPassword())) {
             System.out.println("user password matched");
             authenticatedUserAccount.setAuthenticated(true);
-//            Long id = authenticatedUserAccount.getUserId();
-/*                authenticatedUserAccount.add(linkTo(methodOn(UserAccountController.class).getUser(id)).withSelfRel());
-                authenticatedUserAccount.add(linkTo(methodOn(OrderController.class).getAllOrders(id)).withRel("checkouts"));*/
         } else {
             System.out.println("password not matched:"+user.getEmail());
             return null;
@@ -96,11 +84,6 @@ public class UserAccountService implements UserDetailsService {
     public UserAccount saveUser(UserAccount userAccount) {
         System.out.println("saving user");
         if (userAccount.getEmail() == null || userAccount.getPassword() == null) return null;
-
-        // if email already registered, throw error
- /*       if(userAccountRepository.findByEmail(userAccount.getEmail())!=null){
-
-        }*/
         userAccount.setPassword(encoder.encode(userAccount.getPassword()));
         Set<Role> roles = new HashSet<>();
         roles.add(roleRepository.findByName("ROLE_USER"));
@@ -111,11 +94,6 @@ public class UserAccountService implements UserDetailsService {
         userAccount.setExpiryDate(System.currentTimeMillis() + 7 * 86400000);
         userAccount.setPassword(null);
         return userAccount;
-    }
-
-
-    public void deleteUser(UserAccount userAccount) {
-        userAccountRepository.delete(userAccount.getUserId());
     }
 
     public ResetPassword resetPassword(UserAccount userAccount, StringBuilder url) {
@@ -141,9 +119,7 @@ public class UserAccountService implements UserDetailsService {
         // save the token and the rest date
         user.setResetUuid(token);
         user.setResetDate(currentDate);
-//        createPasswordResetTokenForUser(user, token);
 
-//        String url = linkTo(methodOn(UserAccountController.class).resetPassword(user.getUserId(), token, u)).toString().replace("resetPassword", "changePassword.html");
         String message = "Click the link to Reset Password";
 
         String body = message + " \r\n" + url.toString();
@@ -164,11 +140,6 @@ public class UserAccountService implements UserDetailsService {
         return response;
 
     }
-
-/*    public void createPasswordResetTokenForUser(UserAccount user, String token) {
-        PasswordResetToken myToken = new PasswordResetToken(token, user);
-        passwordTokenRepository.save(myToken);
-    }*/
 
     public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserAccount authenticatedUserAccount = null;
@@ -204,30 +175,6 @@ public class UserAccountService implements UserDetailsService {
         resetPassword.setRequesteduuid(null);
     }
 
-    public String validatePasswordResetToken(long id, String token) {
-        PasswordResetToken passToken = passwordTokenRepository.findByToken(token);
-        if ((passToken == null) || (passToken.getUser().getUserId() != id)) {
-            return "invalidToken";
-        }
-
-        Calendar cal = Calendar.getInstance();
-        if ((passToken.getExpiryDate()
-                .getTime() - cal.getTime()
-                .getTime()) <= 0) {
-            passwordTokenRepository.delete(passToken.getId());
-            return "expired";
-        }
-
-        passwordTokenRepository.delete(passToken.getId());
-
-        UserAccount user = passToken.getUser();
-        Authentication auth = new UsernamePasswordAuthenticationToken(
-                user, null, Arrays.asList(
-                new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        return null;
-    }
-
     public List<TransactionResponse> getAllTransactions(String email, String fname, String lname, String country, String state, String city, LocalDateTime fromDate, LocalDateTime toDate) {
         List<TransactionResponse> transactionResponse = userAccountRepository.findTransactions(email, fname, lname, country, state, city, fromDate, toDate);
 
@@ -237,19 +184,5 @@ public class UserAccountService implements UserDetailsService {
     public UserAccount getUserByUUID(String uuid) {
         UserAccount user = userAccountRepository.findByResetUuid(uuid);
         return user;
-    }
-
-    public UserAccount verifyUserHasRequiredRole(Long userId, String requiredRole){
-
-        if(userId == null){
-            return null;
-        }
-        UserAccount user  = userAccountRepository.findOne(userId);
-        if(user != null && user.getRoles().stream().anyMatch(roles -> roles.getName().equalsIgnoreCase(requiredRole))){
-            return user;
-        }
-        System.out.println("user doesn't has required role:"+ requiredRole);
-        user.getRoles().forEach(System.out::println);
-        return null;
     }
 }

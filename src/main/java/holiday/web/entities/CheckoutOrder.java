@@ -1,9 +1,7 @@
 package holiday.web.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import holiday.web.utilities.LocalDateTimeConverter;
 import org.springframework.hateoas.ResourceSupport;
 
@@ -12,10 +10,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,17 +38,10 @@ public class CheckoutOrder extends ResourceSupport {
     private LocalDateTime dateTime;
 
     @JsonIgnore
-//        @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "ORDER_USER"))
     private UserAccount userAccount;
 
-    //@Transient
-    //@JsonIgnore
-    // public int user_id ;
-
-    //	    @JsonIgnore
-//		@JsonBackReference
     @OneToMany(mappedBy = "checkoutOrder", cascade = CascadeType.ALL)
     private List<Item> item = new ArrayList<Item>();
 
@@ -71,13 +60,6 @@ public class CheckoutOrder extends ResourceSupport {
         this.dateTime = dateTime;
     }
 
-//		public int getUserId()  // bug<- u
-//		{
-//	    	user_id =  userAccount.getId();
-//	    	return user_id;
-//		}
-
-
     public Long getOrderId() {
         return orderId;
     }
@@ -94,7 +76,6 @@ public class CheckoutOrder extends ResourceSupport {
         this.total = total;
     }
 
-
     public UserAccount getUserAccount() {
         return userAccount;
     }
@@ -102,7 +83,6 @@ public class CheckoutOrder extends ResourceSupport {
     public void setUserAccount(UserAccount userAccount) {
         this.userAccount = userAccount;
     }
-
 
     public List<Item> getItem() {
         return item;

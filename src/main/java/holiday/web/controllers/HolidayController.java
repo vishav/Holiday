@@ -68,16 +68,4 @@ public class HolidayController {
         }
         return null;
     }
-
-/*    @RequestMapping("/hselection")
-    public String getHselection()
-    {
-        return "hselection";
-    }
-
-    @RequestMapping("/instructions")
-    public void getInstructions()
-    {
-//        return "hselection";
-    }*/
 }

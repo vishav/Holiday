@@ -1,9 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { ShoppingcartService } from '../../services/shoppingcart.service';
-import { PaymentService } from "../../services/payment.service";
-
-import { SearchQuery } from "../../models/SearchQuery";
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {ShoppingcartService} from '../../services/shoppingcart.service';
+import {Router} from '@angular/router';
 import {PricingService} from "../../services/pricing.service";
 
 @Component({
@@ -16,7 +13,6 @@ export class ShoppingcartComponent implements OnInit {
   pricing: any = null;
   cartitems: any = [];
   cartnumber: number;
-  //price: number;
   total: number;
 
   constructor(private cartservice: ShoppingcartService,
@@ -25,8 +21,6 @@ export class ShoppingcartComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.price = this.cartservice.getPricePerYear();
-
     this.pricingservice.getPricing().subscribe(pricing => {
       if (pricing) {
         this.pricing = pricing;
@@ -40,7 +34,6 @@ export class ShoppingcartComponent implements OnInit {
           this.cartitems = usercartitems;
         }
         this.total = this.totalprice();
-        //console.log("shoppingcart component: " + this.cartitems[0].country);
       });
     });
 
@@ -63,19 +56,11 @@ export class ShoppingcartComponent implements OnInit {
       this.total = this.totalprice();
       console.log("cartnumber from delete:" + this.cartnumber);
     });
-    // this.cartitems.splice(index, 1);
-    // this.total = this.totalprice();
-    // this.cartservice.getShoppingCart().subscribe(cartItems => {
-    //   this.cartnumber = cartItems.length;
-    //   console.log("cartnumber from delete:" + this.cartnumber);
-    // });
   }
 
   totalprice() {
     var total = 0;
     for (var i = 0; i < this.cartitems.length; i++) {
-      //console.log(this.cartitems[i]);
-      //total+= (this.cartitems[i].toYear - this.cartitems[i].fromYear + 1) * this.price;
       total += this.itemprice(this.cartitems[i]);
     }
     return total;
