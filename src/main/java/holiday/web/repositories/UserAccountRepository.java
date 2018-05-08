@@ -45,6 +45,7 @@ public interface UserAccountRepository extends CrudRepository<UserAccount, Long>
             "and (:toDate is null or co.dateTime <= :toDate) "+
             "and (:country is null or it.country=:country) "+
             "and (:state is null or it.state=:state) "+
-            "and (:city is null or it.city=:city) ")
+            "and (:city is null or it.city=:city) " +
+            "order by co.dateTime desc")
     List<TransactionResponse> findTransactions(@Param("email") String email, @Param("fname") String fname, @Param("lname") String lname, @Param("country") String country, @Param("state") String state, @Param("city") String city, @Param("fromDate") LocalDateTime fromDate, @Param("toDate") LocalDateTime toDate);
 }
