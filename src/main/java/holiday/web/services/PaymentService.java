@@ -69,6 +69,9 @@ public class PaymentService {
 
         double refundAmount = refund.getRefundAmount();
 
+        Transaction transaction  = gateway.transaction().find(paymentId);
+
+
         Result<Transaction> result = gateway.transaction().refund(paymentId, new BigDecimal(refundAmount));
 
         if (result.isSuccess()) {
@@ -81,7 +84,7 @@ public class PaymentService {
             LocalDateTime currentDate = LocalDateTime.now();
             // update the date when the last refund occurred
             checkoutOrder.setRefundDate(currentDate);
-
+            checkoutOrder.setRefundId(result.getTarget().getId());
             // save the order
             orderService.saveOrder(checkoutOrder);
 
