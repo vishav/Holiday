@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {SearchQuery} from "../../models/SearchQuery";
 import {ShoppingcartService} from "../../services/shoppingcart.service";
-import {PaymentService} from "../../services/payment.service";
 import {PricingService} from "../../services/pricing.service";
+import {OrderService} from "../../services/order.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-checkout',
@@ -13,19 +14,12 @@ export class CheckoutComponent implements OnInit {
   cartitems: SearchQuery[];
   total: number;
   pricing: any = null;
-  firstname: string;
-  lastname: string;
-  expirydate: string;
-  cardnumber: number;
-  cvcode: number;
-  paypalactive: boolean = false;
-  creditactive: boolean = false;
-  invalidCVVCode = false;
-  invalidCreditCardNum = false;
+  paymentResponse: any;
 
   constructor(private cartservice: ShoppingcartService,
               private pricingservice: PricingService,
-              private paymentservice: PaymentService) {
+              private orderservice: OrderService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -78,116 +72,14 @@ export class CheckoutComponent implements OnInit {
       return (this.pricing.minPrice);
   }
 
-  paymethod(type) {
-    if (type === 'paypal') {
-      this.paypalactive = true;
-      this.creditactive = false;
-    }
-    if (type === 'credit') {
-      this.creditactive = true;
-      this.paypalactive = false;
-    }
-  }
-
-  getType(number) {
-    var re = new RegExp("^4");
-    if (number.match(re) != null)
-      return "visa";
-
-    // Mastercard
-    re = new RegExp("^5[1-5]");
-    if (number.match(re) != null)
-      return "mastercard";
-
-    // AMEX
-    re = new RegExp("^3[47]");
-    if (number.match(re) != null)
-      return "amex";
-
-    // Discover
-    re = new RegExp("^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)");
-    if (number.match(re) != null)
-      return "discover";
-
-    // Diners
-    re = new RegExp("^36");
-    if (number.match(re) != null)
-      return "diners";
-  }
-
-  verifyCVVCodeLength(type, length) {
-    if (type == "amex") {
-      if (length != 4) {
-        return false;
-      } else {
-        return true
-      }
-    } else if (type == "mastercard" || type == "visa" || type == "diners" || type == "discover") {
-      if (length != 3) {
-        return false;
-      } else {
-        return true
-      }
-    }
-    return false;
-  }
-
-  validateCreditCard(value) {
-    // accept only digits, dashes or spaces
-    if (/[^0-9-\s]+/.test(value)) return false;
-
-    // The Luhn Algorithm. It's so pretty.
-    var nCheck = 0, nDigit = 0, bEven = false;
-    value = value.replace(/\D/g, "");
-
-    for (var n = value.length - 1; n >= 0; n--) {
-      var cDigit = value.charAt(n),
-        nDigit = parseInt(cDigit, 10);
-
-      if (bEven) {
-        if ((nDigit *= 2) > 9) nDigit -= 9;
-      }
-
-      nCheck += nDigit;
-      bEven = !bEven;
-    }
-
-    return (nCheck !== 0) && (nCheck % 10) == 0;
-  }
-
-
-  pay() {
-
-    if(!this.validateCreditCard(this.cardnumber)){
-      this.invalidCreditCardNum = true;
-      return;
-    }
-
-    var type = this.getType(this.cardnumber);
-    const cvvCodeLength = this.cvcode.toString().length;
-    this.invalidCVVCode = !this.verifyCVVCodeLength(type, cvvCodeLength);
-    if(this.invalidCVVCode){
-      return;
-    }
-    console.log(type);
-    if (this.creditactive) {
-      var payment = {
-        "total": this.total,
-        "method": "credit",
-        "type": type,
-        "number": this.cardnumber,
-        "expire_month": this.expirydate.split("/")[0],
-        "expire_year": this.expirydate.split("/")[1],
-        "first_name": this.firstname,
-        "last_name": this.lastname,
-        "cvv": this.cvcode
-      };
-      this.paymentservice.createpayment(payment);
-
-    }
-
-    if (this.paypalactive) {
-
+  onPaymentStatus(response): void{
+    this.paymentResponse = response;
+    if(this.paymentResponse && this.paymentResponse.success){
+      const paymentid = this.paymentResponse.target.id;
+      this.orderservice.pushtoorders(paymentid, this.total);
+      this.router.navigate(['/success'])
+    }else{
+      this.router.navigate(['/failure']);
     }
   }
 }

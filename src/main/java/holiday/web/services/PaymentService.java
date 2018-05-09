@@ -21,37 +21,24 @@ public class PaymentService {
 
     private BraintreeGateway gateway = HolidayApplication.gateway;
 
-    public PaymentResponse payment(Payment payment) {
+    public String getClientToken(){
+        String token = gateway.clientToken().generate();
+        return token;
+    }
 
-        PaymentResponse paymentResponse = new PaymentResponse();
-        String name = payment.getFname() + " " + payment.getLname();
+    public Result<Transaction> payment(Nonce nonce) {
 
         // Create the transaction
         TransactionRequest transactionRequest = new TransactionRequest()
-                .amount(payment.getTotal())
-                .creditCard()
-                .cardholderName(name)
-                .cvv(payment.getCvv())
-                .number(payment.getCnum())
-                .expirationMonth(payment.getExpmon())
-                .expirationYear(payment.getExpyear())
-                .done()
-                .paymentMethodNonce("fake-valid-nonce")
+                .amount(nonce.getChargeAmount())
+                .paymentMethodNonce(nonce.getNonce())
                 .options()
                 .submitForSettlement(true)
                 .done();
 
         Result<Transaction> result = gateway.transaction().sale(transactionRequest);
 
-        if (result.isSuccess()) {
-            Transaction transaction = result.getTarget();
-            paymentResponse.setTransactionID(transaction.getId());
-            paymentResponse.setSuccess(true);
-        } else {
-            paymentResponse.setSuccess(false);
-        }
-
-        return paymentResponse;
+        return result;
     }
 
     public RefundResponse refundPayment(Refund refund) {

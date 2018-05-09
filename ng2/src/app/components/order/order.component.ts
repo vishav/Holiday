@@ -3,7 +3,6 @@ import {Component, OnInit} from '@angular/core';
 import {OrderService} from '../../services/order.service';
 import {OrderItem} from "../../models/OrderItem";
 import {SearchQuery} from "../../models/SearchQuery";
-import {PaymentService} from "../../services/payment.service";
 
 @Component({
   selector: 'app-order',
@@ -17,7 +16,7 @@ export class OrderComponent implements OnInit {
   payment: any;
   orderId: number;
 
-  constructor(private orderService: OrderService, private paymentservice: PaymentService) {
+  constructor(private orderService: OrderService) {
 
   }
 
