@@ -42,14 +42,6 @@ public class PaymentController {
         return new ResponseEntity<>(paymentResponse, HttpStatus.OK);
     }
 
-/*    @RequestMapping(method = RequestMethod.POST, value = "/payment")
-    public PaymentResponse payment(@RequestBody Payment payment)
-    {
-        PaymentResponse paymentResponse = paymentService.payment(payment);
-
-        return paymentResponse;
-    }*/
-
     @RequestMapping(method = RequestMethod.POST, value = "/refund")
     public RefundResponse refundPayment(@RequestBody Refund refund)
     {
