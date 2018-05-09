@@ -15,7 +15,7 @@
       </thead>
       <tbody>
       <tr class="warning" *ngFor="let order of orders; let i = index">
-        <td>{{order.dateTime | date: 'yyyy-MM-dd'}}</td>
+        <td>{{order.dateTime}}</td>
         <td><a data-toggle="modal" data-target="#orderModal" (click)="getorderdetails(i)">Order details </a></td>
         <td>{{order.total | currency}}</td>
 <!--        <td><a data-toggle="modal" data-target="#payModal" (click)="getpayment(order.paymentId)">{{order.total |

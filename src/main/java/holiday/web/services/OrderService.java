@@ -18,7 +18,7 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     public List<CheckoutOrder> getAllOrders(Long userId) {
-        return orderRepository.findByUserAccountUserId(userId);
+        return orderRepository.findByUserAccountUserIdOrderByDateTimeDesc(userId);
     }
 
     public CheckoutOrder getOrder(Long id) {
