@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by karthik on 1/22/2017.
- */
 
 @RestController
 public class OrderController {

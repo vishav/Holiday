@@ -12,9 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
-/**
- * Created by karthik on 2/15/2017.
- */
+
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 

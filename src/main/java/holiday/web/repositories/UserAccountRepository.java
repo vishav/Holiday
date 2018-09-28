@@ -12,25 +12,14 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Created by karthik on 1/22/2017.
- */
+
 public interface UserAccountRepository extends CrudRepository<UserAccount, Long> {
 
-    // @Override
-    // @PreAuthorize("hasRole('ROLE_ADMIN')")
     Page<UserAccount> findAll(Pageable pageable);
 
-    //@Override
-    // @PostAuthorize("returnObject.firstName == principal.username or hasRole('ROLE_ADMIN')")
     UserAccount findOne(Long id);
 
     UserAccount findByResetUuid(String id);
-
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    List<UserAccount> findByFirstNameLike(@Param("firstName") String firstName);
-
-//    UserAccount findByUserName(String userName);
 
     UserAccount findByEmail(String email);
 

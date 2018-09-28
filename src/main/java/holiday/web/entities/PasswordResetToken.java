@@ -4,9 +4,7 @@ import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * Created by karthik on 3/31/2017.
- */
+
 @Entity
 public class PasswordResetToken {
 

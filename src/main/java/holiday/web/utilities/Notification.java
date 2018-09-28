@@ -16,10 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 
 
-/**
- * Created by karthik on 2/5/2017.
- */
-
 
 public class Notification {
 

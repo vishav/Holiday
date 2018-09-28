@@ -9,9 +9,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by karthik on 2/2/2017.
- */
 
 @Component
 @Aspect

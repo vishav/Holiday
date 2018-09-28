@@ -26,9 +26,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-/**
- * Created by karthik on 1/22/2017.
- */
 
 @Service
 public class UserAccountService implements UserDetailsService {
