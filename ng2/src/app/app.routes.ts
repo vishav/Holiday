@@ -19,6 +19,8 @@ import { ChangepasswordComponent } from './components/admin/changepassword/chang
 import { ResetrequestComponent } from './components/resetrequest/resetrequest.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TransactionComponent } from "./components/admin/transaction/transaction.component";
+import { ContactusComponent } from './components/contactus/contactus.component';
+import { MessagesComponent } from './components/messages/messages.component';
 
 export const routes: Routes = [
   {
@@ -112,6 +114,14 @@ export const routes: Routes = [
     path: 'transaction/:angular2 optio/:state/:city/:fromyear/:frommonth/:fromday/:toyear/:tomonth/:today',
     component: TransactionComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'contactus',
+    component: ContactusComponent
+  },
+  {
+    path: 'messages',
+    component: MessagesComponent
   }
 
 ];

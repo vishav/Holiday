@@ -1,6 +1,5 @@
 package holiday.web.repositories;
 
-import com.sun.istack.internal.Nullable;
 import holiday.web.entities.TransactionResponse;
 import holiday.web.entities.UserAccount;
 import org.springframework.data.domain.Page;

@@ -38,6 +38,9 @@ import {TransactionService} from './services/transaction.service';
 import {PricingService} from "./services/pricing.service";
 import {HashLocationStrategy, LocationStrategy} from "@angular/common";
 import {NgxBraintreeModule} from "ngx-braintree";
+import { MessagesComponent } from './components/messages/messages.component';
+import { ContactusComponent } from './components/contactus/contactus.component';
+import {ContactusService} from './services/contactus.service';
 
 // Define the routes
 
@@ -63,7 +66,9 @@ import {NgxBraintreeModule} from "ngx-braintree";
     ChangepasswordComponent,
     ResetrequestComponent,
     DashboardComponent,
-    TransactionComponent
+    TransactionComponent,
+    MessagesComponent,
+    ContactusComponent
   ],
   imports: [
     BrowserModule,
@@ -82,6 +87,7 @@ import {NgxBraintreeModule} from "ngx-braintree";
     OrderService,
     TransactionService,
     PricingService,
+    ContactusService,
     {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [AppComponent]

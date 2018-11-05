@@ -1,0 +1,96 @@
+<app-navbar [cartnumber]="cartnumber"></app-navbar>
+
+<div class="alert alert-warning" role="alert" *ngIf="!isloggedin; else authcheckblock ">{{notloggederrormessage}}
+</div>
+<ng-template #authcheckblock>
+    <div class="alert alert-danger" role="alert" *ngIf="!role || role.indexOf('ROLE_USER')==-1 && role.indexOf('ROLE_ADMIN')==-1; else successBlock">{{unautherrormessage}}</div>
+</ng-template>
+
+<ng-template #successBlock>
+    <div class="container">
+        <div *ngIf="role.indexOf('ROLE_ADMIN')==-1">
+            <button type="button" class="btn btn-info " data-toggle="modal" data-target="#myModal" 
+            data-backdrop="static" (click)="resetReadOnly()">Contact Us
+            </button>
+        </div>
+
+        <h3> Message History </h3>
+        <div id="message_history">
+            <table class="table table-striped table-hover ">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Message</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr class="warning" *ngFor="let message of messages; let idx = index">
+                <td>{{message.userAccount.fname}} {{message.userAccount.lname}}</td>
+                <td>{{message.dateTime | date: 'MM/dd/yyyy'}}</td>
+                <td>
+                  <button type="button" class="btn btn-info " data-toggle="modal" data-target="#myModal" data-backdrop="static"
+                          (click)="setIndex(idx,1)">View Message
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="myModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+	            <div *ngIf="this.contactsuccessmessage" class="alert alert-success" role="alert">
+	               {{contactsuccessmessage}}
+	            </div>           	
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Contact Us</h4>
+                </div>                
+	                <div class="modal-body">
+                        <div *ngIf="role.indexOf('ROLE_ADMIN')==-1 && readonly==-1; else adminBlock">
+    	                    <div class="form-group">
+    	                        <label for="subject">
+    	                            Subject:</label>
+    	                        <input type="text" class="form-control" id="subject" name="subject" 
+    	                        [(ngModel)]="subject" required maxlength="50">
+
+    	                    </div>
+    	                    <div class="form-group">
+    	                        <label for="message">
+    	                            Message:</label>
+    	                        <textarea class="form-control" type="textarea" name="message" id="message" 
+    	                        [(ngModel)]="message" placeholder="Your Message Here" maxlength="6000" 
+    	                        rows="7"></textarea>
+    	                    </div>
+                        </div>
+                        <ng-template #adminBlock>
+                            <div *ngIf="this.messages?.length!=0">
+                                <div class="form-group">
+                                    Subject: {{messages[index]?.subject}}
+                                </div>
+                                <div class="form-group">
+                                    Message: {{messages[index]?.message}}
+                                </div>
+                                <div *ngIf="sendingreply!=1; else replyBlock" class="form-group">
+                                    Reply: {{messages[index]?.reply}}
+                                </div>
+                                <ng-template #replyBlock>
+                                        <label for="reply">
+                                            Reply:</label>
+                                        <textarea class="form-control" type="textarea" name="reply" id="reply" 
+                                        [(ngModel)]="reply" placeholder="Your Reply Here" maxlength="6000" 
+                                        rows="7"></textarea>
+                                </ng-template>
+                            </div>                      
+                        </ng-template>
+	                </div>
+                <div *ngIf="(role.indexOf('ROLE_ADMIN')==-1 && readonly==-1) || (sendingreply==1)" class="modal-footer">
+                    <button type="button" class="btn btn-primary form-control" (click)="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
