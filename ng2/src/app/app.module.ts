@@ -38,7 +38,6 @@ import {TransactionService} from './services/transaction.service';
 import {PricingService} from "./services/pricing.service";
 import {HashLocationStrategy, LocationStrategy} from "@angular/common";
 import {NgxBraintreeModule} from "ngx-braintree";
-import { MessagesComponent } from './components/messages/messages.component';
 import { ContactusComponent } from './components/contactus/contactus.component';
 import {ContactusService} from './services/contactus.service';
 
@@ -67,7 +66,6 @@ import {ContactusService} from './services/contactus.service';
     ResetrequestComponent,
     DashboardComponent,
     TransactionComponent,
-    MessagesComponent,
     ContactusComponent
   ],
   imports: [

@@ -20,7 +20,6 @@ import { ResetrequestComponent } from './components/resetrequest/resetrequest.co
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TransactionComponent } from "./components/admin/transaction/transaction.component";
 import { ContactusComponent } from './components/contactus/contactus.component';
-import { MessagesComponent } from './components/messages/messages.component';
 
 export const routes: Routes = [
   {
@@ -118,10 +117,5 @@ export const routes: Routes = [
   {
     path: 'contactus',
     component: ContactusComponent
-  },
-  {
-    path: 'messages',
-    component: MessagesComponent
   }
-
 ];
