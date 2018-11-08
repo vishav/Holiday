@@ -4,6 +4,7 @@ import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
+import com.braintreegateway.ValidationError;
 import holiday.web.HolidayApplication;
 import holiday.web.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.text.DecimalFormat;
 
 @Service
 public class PaymentService {
@@ -66,13 +68,13 @@ public class PaymentService {
 
         // get the payment id associated wih that order
         String paymentId = checkoutOrder.getPaymentId();
-
-        double refundAmount = refund.getRefundAmount();
-
+        // double refundAmount = Double.parseDouble(String.format( "%.2f", refund.getRefundAmount()));
+        BigDecimal refundAmount = new BigDecimal(String.format( "%.2f", refund.getRefundAmount()));
+        System.out.println(refundAmount);
         Transaction transaction  = gateway.transaction().find(paymentId);
 
 
-        Result<Transaction> result = gateway.transaction().refund(paymentId, new BigDecimal(refundAmount));
+        Result<Transaction> result = gateway.transaction().refund(paymentId, refundAmount);
 
         if (result.isSuccess()) {
 
@@ -94,6 +96,12 @@ public class PaymentService {
             refundResponse.setSuccess(true);
             refundResponse.setRefundMessage("Refund initiated successfully");
         } else {
+
+            // log these error messages
+            // for (ValidationError error : result.getErrors().getAllDeepValidationErrors()) {
+            //   System.out.println(error.getCode());
+            //   System.out.println(error.getMessage());
+            // }
             refundResponse.setSuccess(false);
             refundResponse.setRefundMessage("Error occured while refunding. Please try again in some time.");
         }

@@ -1,10 +1,10 @@
 <app-navbar [cartnumber]="cartnumber"></app-navbar>
 
-<div class="alert alert-warning" role="alert" *ngIf="!isloggedin; else authcheckblock ">{{notloggederrormessage}}
+<div class="alert alert-warning" role="alert" *ngIf="!isloggedin; else successBlock ">{{notloggederrormessage}}
 </div>
-<ng-template #authcheckblock>
+<!-- <ng-template #authcheckblock>
     <div class="alert alert-danger" role="alert" *ngIf="!role || role.indexOf('ROLE_USER')==-1 && role.indexOf('ROLE_ADMIN')==-1; else successBlock">{{unautherrormessage}}</div>
-</ng-template>
+</ng-template> -->
 
 <ng-template #successBlock>
     <div class="container">

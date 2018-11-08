@@ -133,6 +133,9 @@ export class TransactionComponent implements OnChanges {
             this.refundMessage = result.refundMessage;
             this.refundSuccess = result.success;
             this.refundResponse = result;
+            setTimeout(() => {
+              location.reload();
+            }, 2000); 
           } else {
             console.log(result.refundMessage);
             this.refundMessage = result.refundMessage;
